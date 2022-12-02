@@ -28,6 +28,14 @@
 				</a>
 			</li>
 		<?php endif; ?>
+		<?php if($tools->validar_acceso(1,$usr_rol, $roles)): ?>
+			<li class="bold <?php if($cms_seccion[$index]['modulo'] == 'centro-costos') echo 'active' ?>">
+				<a class="waves-effect waves-cyan <?php if($cms_seccion[$index]['modulo'] == 'centro-costos') echo 'active' ?>" href="centro-costos">
+					<i class="material-icons">insert_chart</i>
+					<span class="menu-title">Centro de Costos</span>
+				</a>
+			</li>
+		<?php endif; ?>
 		</ul>
 		<div class="navigation-background"></div><a class="sidenav-trigger btn-sidenav-toggle btn-floating btn-medium waves-effect waves-light hide-on-large-only" data-target="slide-out"><i class="material-icons">menu</i></a>
 	</aside>
