@@ -1,3 +1,6 @@
 # ERRORES LOG
 *log
 *.log
+
+# Quitar Config
+*_config.php
