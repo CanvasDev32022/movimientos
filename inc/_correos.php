@@ -72,7 +72,7 @@
 
 			$mail->AddAddress($email);
 
-			$mail->Subject = "Nuevo contacto";
+			$mail->Subject = "Recuperar Contraseña";
 			$mail->CharSet = 'UTF-8';
 			$mail->Body = '
 				<!DOCTYPE html>
@@ -143,12 +143,12 @@
 										<tbody>
 											<!-- HEADER -->
 											<tr bgcolor="#e6e6e6" style="background: #e6e6e6;">
-												<td width="650" align="center" class="background-grey" style="padding: 10px 20px 20px;">
+												<td width="650" align="center" class="background-grey" style="padding: 20px;">
 													<table border="0" cellpadding="0" cellspacing="0">
 														<tbody>
 															<tr>
 																<td width="160" align="left">
-																	<img src="'.URLSITE.'admin/img/home/logo-home.webp" width="80" alt="'.SITENAME.'" border="0" style="display: block;">
+																	<img src="'.URLSITE.'img/home/logo-mobile.png" width="150" alt="'.SITENAME.'" border="0" style="display: block;">
 																</td>
 																<td width="490">
 																	
@@ -191,8 +191,8 @@
 													<table border="0" cellpadding="0" cellspacing="0">
 														<tbody>
 															<tr>
-																<td width="200" align="center" style="background: #cb6e1d; padding: 10px; border-radius: 20px;">
-																	<a href="'.URLSITE.'admin/contrasena-recuperar?k='.$codigo.'" target="_blank" style="color: #ffffff; font-weight: 600; font-size: 16px; ">Restablecer</a>
+																<td width="200" align="center" style="background: #0899c5; padding: 10px; border-radius: 20px;">
+																	<a href="'.URLSITE.'contrasena-recuperar?k='.$codigo.'" target="_blank" style="color: #ffffff; font-weight: 600; font-size: 16px; ">Restablecer</a>
 																</td>
 															</tr>
 														</tbody>
@@ -225,11 +225,11 @@
 													<table border="0" cellpadding="0" cellspacing="0">
 														<tbody>
 															<tr>
-																<td width="100" align="left" style="font-weight: 600;">
-																	<a href="mailto:'.$smtp[1]['con_correo'].'" style="color: #24adf3;">@tiendaDyas</a>
+																<td width="70" align="left" style="font-weight: 600;">
+																	<a href="mailto:'.$smtp[1]['con_correo'].'" style="color: #24adf3;">@Hantik</a>
 																</td>
-																<td width="550" align="left" style="font-weight: 600;">
-																	Bogotá - Cundinamarca, Colombia
+																<td width="580" align="left" style="font-weight: 600;">
+																	Cali - Valle del Cauca, Colombia
 																</td>
 															</tr>
 

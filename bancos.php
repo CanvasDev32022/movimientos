@@ -1,5 +1,5 @@
 <?php
-	$index = 2;
+	$index = 4;
 	require('mod/header.php');
 	require('mod/aside.php');
 ?>

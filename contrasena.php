@@ -23,8 +23,8 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<link rel="shortcut icon" sizes="196x196" href="img/app.png">
 	<link rel="stylesheet" href="css/login.css">
-	<link rel="stylesheet" href="../assets/css/toast.min.css">
-	<script type="text/javascript" src="../assets/js/toast.min.js"></script>
+	<link rel="stylesheet" href="css/toast.min.css">
+	<script type="text/javascript" src="js/toast.min.js"></script>
 	<title>Cambiar contrase&ntilde;a - <?php echo SITENAME ?></title>
 </head>
 <body>
