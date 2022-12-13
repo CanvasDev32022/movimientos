@@ -14,9 +14,9 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<link rel="shortcut icon" sizes="196x196" href="img/app.png">
 	<link rel="stylesheet" href="css/login.css">
-	<link rel="stylesheet" href="../assets/css/toast.min.css">
+	<link rel="stylesheet" href="css/toast.min.css">
 
-	<script src="../assets/js/toast.min.js"></script>
+	<script src="js/toast.min.js"></script>
 	<title>Recuperar contraseña - <?php echo SITENAME ?></title>
 </head>
 <body>

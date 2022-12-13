@@ -2,7 +2,7 @@
 		<div class="brand-sidebar">
 			<h1 class="logo-wrapper">
 				<a class="brand-logo" href="/">
-					<img class="hide-on-med-and-down logo-left" src="img/home/logo-left.png" alt="Zuntek Logo" />
+					<img class="hide-on-med-and-down logo-left" src="img/home/logo-left-01.png" alt="Zuntek Logo" />
 				<?php if($cms_seccion[$index]['aside']): ?>
 					<img class="show-on-medium-and-down hide-on-med-and-up logo-mobile" src="img/home/logo-right.png" alt="materialize logo" />
 				<?php endif; ?>
@@ -28,14 +28,62 @@
 				</a>
 			</li>
 		<?php endif; ?>
-		<?php if($tools->validar_acceso(1,$usr_rol, $roles)): ?>
+		<?php if($tools->validar_acceso(2,$usr_rol, $roles)): ?>
 			<li class="bold <?php if($cms_seccion[$index]['modulo'] == 'centro-costos') echo 'active' ?>">
 				<a class="waves-effect waves-cyan <?php if($cms_seccion[$index]['modulo'] == 'centro-costos') echo 'active' ?>" href="centro-costos">
 					<i class="material-icons">insert_chart</i>
-					<span class="menu-title">Centro de Costos</span>
+					<span class="menu-title">Centros de Costo</span>
 				</a>
 			</li>
 		<?php endif; ?>
+		<?php if($tools->validar_acceso(3,$usr_rol, $roles)): ?>
+			<li class="bold <?php if($cms_seccion[$index]['modulo'] == 'movimientos') echo 'active' ?>">
+				<a class="waves-effect waves-cyan <?php if($cms_seccion[$index]['modulo'] == 'movimientos') echo 'active' ?>" href="movimientos">
+					<i class="material-icons">calendar_month</i>
+					<span class="menu-title">Movimientos</span>
+				</a>
+			</li>
+		<?php endif; ?>
+		<?php if($tools->validar_acceso(4,$usr_rol, $roles)): ?>
+			<li class="bold <?php if($cms_seccion[$index]['padre'] == 'bancos') echo 'active open' ?>">
+				<a class="collapsible-header waves-effect waves-cyan" href="JavaScript:void(0)">
+					<i class="material-icons">savings</i>
+					<span class="menu-title">Bancos</span>
+				<div class="collapsible-body">
+					<ul class="collapsible collapsible-sub" data-collapsible="accordion">
+					<?php if($tools->validar_acceso(0, $usr_rol, $roles)): ?>
+						<li class="bold">
+							<a href="bancos" class="bold <?php if($cms_seccion[$index]['modulo'] == 'bancos') echo 'active' ?>">
+								<i class="material-icons">radio_button_unchecked</i>
+								<span>Bancos</span>
+							</a>
+						</li>
+					<?php endif; ?>
+					</ul>
+				</div>
+				</a>
+			</li>
+		<?php endif;?>
+		<?php if($tools->validar_acceso(5,$usr_rol, $roles)): ?>
+			<li class="bold <?php if($cms_seccion[$index]['padre'] == 'cajas') echo 'active open' ?>">
+				<a class="collapsible-header waves-effect waves-cyan" href="JavaScript:void(0)">
+					<i class="material-icons">point_of_sale</i>
+					<span class="menu-title">Cajas</span>
+				<div class="collapsible-body">
+					<ul class="collapsible collapsible-sub" data-collapsible="accordion">
+					<?php if($tools->validar_acceso(0, $usr_rol, $roles)): ?>
+						<li class="bold">
+							<a href="cajas" class="bold <?php if($cms_seccion[$index]['modulo'] == 'cajas') echo 'active' ?>">
+								<i class="material-icons">radio_button_unchecked</i>
+								<span>Cajas</span>
+							</a>
+						</li>
+					<?php endif; ?>
+					</ul>
+				</div>
+				</a>
+			</li>
+		<?php endif;?>
 		</ul>
 		<div class="navigation-background"></div><a class="sidenav-trigger btn-sidenav-toggle btn-floating btn-medium waves-effect waves-light hide-on-large-only" data-target="slide-out"><i class="material-icons">menu</i></a>
 	</aside>
