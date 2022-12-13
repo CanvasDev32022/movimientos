@@ -2,5 +2,11 @@ Options +FollowSymLinks
 RewriteEngine on
 
 RewriteRule ^login 						login.php [QSA,L]
+RewriteRule ^recuperar 					recuperar.php [QSA,L]
+RewriteRule ^contrasena-recuperar		contrasena.php [QSA,L]
 RewriteRule ^dashboard 					index.php [QSA,L]
 RewriteRule ^usuarios 					usuarios.php [QSA,L]
+RewriteRule ^centro-costos 				centro-costos.php [QSA,L]
+RewriteRule ^movimientos 				movimientos.php [QSA,L]
+RewriteRule ^bancos 					bancos.php [QSA,L]
+RewriteRule ^cajas 						cajas.php [QSA,L]
