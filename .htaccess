@@ -1,5 +1,6 @@
 Options +FollowSymLinks
 RewriteEngine on
 
+RewriteRule ^login 						login.php [QSA,L]
 RewriteRule ^dashboard 					index.php [QSA,L]
 RewriteRule ^usuarios 					usuarios.php [QSA,L]

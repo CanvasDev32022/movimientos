@@ -7,6 +7,8 @@
 	$cms_seccion = [
 		/* 00 */array('slug'=>'dashboard', 	 	'padre'=>'', 			'modulo'=>'dashboard',  	'buscar'=> false, 	'titulo'=>true, 'aside'=>true,	 'nombre'=>"dashboard", 				'acceso'=>"0,1"),
 		/* 01 */array('slug'=>'usuarios',  	 	'padre'=>'', 			'modulo'=>'usuarios',   	'buscar'=> true, 	'titulo'=>true, 'aside'=>true,	 'nombre'=>"usuarios", 					'acceso'=>"0,1"),
+	    /* 01 */array('slug'=>'centro-costos',  'padre'=>'', 			'modulo'=>'centro-costos',  'buscar'=> true, 	'titulo'=>true, 'aside'=>true,	 'nombre'=>"centro-costos", 			'acceso'=>"0,1"),
+
 	];
 
 ?>

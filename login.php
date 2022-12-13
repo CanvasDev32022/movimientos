@@ -14,8 +14,8 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<link rel="shortcut icon" sizes="196x196" href="img/app.png">
 	<link rel="stylesheet" href="css/login.css">
-	<link rel="stylesheet" href="../assets/css/toast.min.css">
-	<script src="../assets/js/toast.min.js"></script>
+	<link rel="stylesheet" href="css/toast.min.css">
+	<script src="js/toast.min.js"></script>
 	<title>Iniciar sesi&oacute;n - <?php echo SITENAME ?></title>
 </head>
 <body>
@@ -35,10 +35,10 @@
 			</p>
 			<input type="hidden" id="action" name="action" value="login">
 			<button type="submit" id="action_login">
-				Iniciar sesión
+				Iniciar sesi&oacute;n
 			</button>
 			<a href="recuperar">
-				¿Olvidaste la contrase&ntilde;a?
+				&iquest;Olvidaste la contrase&ntilde;a?
 			</a>
 		</form>
 	</div>

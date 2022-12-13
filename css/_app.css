@@ -1019,7 +1019,9 @@ textarea.materialize-textarea:focus:not([readonly]) {
 	background-color: #ffffff !important;
 }
 
-input[type=email]:not(.browser-default):disabled { 
+input[type=email]:not(.browser-default):disabled, 
+input[type=date]:not(.browser-default):disabled, input[type="date"]:not(.browser-default)[readonly="readonly"],
+input[type=text]:not(.browser-default):disabled { 
 	border: none; 
 }
 
@@ -1044,6 +1046,8 @@ input.sp-original-input-container:not([type]):focus {
 
 
 /* TODO: CUSTOM SELECTIZE */
+.selectize-control { height: 2.6rem }
+
 .selectize-input, .selectize-input.input-active {
 	height: 2.6rem;
 	font-size: 14px;
@@ -1504,6 +1508,10 @@ input.sp-original-input-container:not([type]):focus {
 	display: flex;
 	border-radius: 20px;
 	padding-left: 10px;
+}
+
+.cardt-header:hover {
+	background-color: rgba(0, 0, 0, .1);
 }
 
 .cardt-titulo {
@@ -2036,6 +2044,7 @@ select.select-error{
 	font-size: .8rem;
 	margin-bottom: 5px;
 	color: #19a0c9;
+	cursor: pointer;
 }
 
 .info-tarea .tarea-lista .tarea-desc i {
@@ -2311,3 +2320,16 @@ li.collection-item .collection-action .switch label {
 .var-actions p {
 	margin-left: auto;
 }
+
+
+/* TODO: CKEDITOR */
+.ck-editor__editable_inline {
+    min-height: 200px;
+    max-height: 200px;
+}
+.ck-rounded-corners .ck.ck-balloon-panel, 
+.ck.ck-balloon-panel.ck-rounded-corners {
+	z-index: 99999;
+}
+
+strong{font-weight:bold}
