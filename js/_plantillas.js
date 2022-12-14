@@ -17,38 +17,37 @@ const plantillas = (seccion, datos, rol=0, pagina=1, busqueda="", id=0, cmp) => 
 		}
 
 		return`
-			${botones_accesos}
-			<div class="row mb-5" id="${seccion}-container">
-				<div class="col m5 s12 pl-10">
-					<div id="registros" class="paginador-left"></div>
-				</div>
-				<div class="col m7 s12 pr-0">
-					<div class="paginador-right">
-						<ul class="pagination" id="paginador"></ul>
-					</div>
-				</div>
+		${botones_accesos}
+		<div class="row mb-5" id="${seccion}-container">
+			<div class="col m5 s12 pl-10">
+				<div id="registros" class="paginador-left"></div>
 			</div>
-			<div class="tabla">
-				<table class="striped borde">
-					<thead>
-						<tr>
-							<th class="table-40">Nombres</th>
-							<th class="table-30">Rol</th>
-							<th class="table-30">Acciones</th>
-						</tr>
-					</thead>
-					<tbody id="resultado"></tbody>
-				</table>
-			</div>
-			<div class="row mt-5">
-				<div class="col m5 s12"></div>
-				<div class="col m7 s12 pr-0">
-					<div class="paginador-right">
-						<ul class="pagination" id="paginadorB"></ul>
-					</div>
+			<div class="col m7 s12 pr-0">
+				<div class="paginador-right">
+					<ul class="pagination" id="paginador"></ul>
 				</div>
 			</div>
-		`;
+		</div>
+		<div class="tabla">
+			<table class="striped borde">
+				<thead>
+					<tr>
+						<th class="table-40">Nombres</th>
+						<th class="table-30">Rol</th>
+						<th class="table-30">Acciones</th>
+					</tr>
+				</thead>
+				<tbody id="resultado"></tbody>
+			</table>
+		</div>
+		<div class="row mt-5">
+			<div class="col m5 s12"></div>
+			<div class="col m7 s12 pr-0">
+				<div class="paginador-right">
+					<ul class="pagination" id="paginadorB"></ul>
+				</div>
+			</div>
+		</div>`;
 	}
 	else
 	if(seccion == "usuarios_lista")
@@ -119,73 +118,73 @@ const plantillas = (seccion, datos, rol=0, pagina=1, busqueda="", id=0, cmp) => 
 							optionEstados = optionEstados + `<option value="${estados[i]['est_id']}">${estados[i]['est_nombre_'+cms_idioma]}</option>`
 
 						modal.innerHTML = `
-							<form method="POST" id="${seccion_singular}_form">
-								<div class="modal-header">
-									<div id="breadcrumbs-wrapper" class="breadcrumbs-bg-image">
-										<div class="container mt-0">
-											<div class="row mb-0">
-												<div class="col s12 m11 l11">
-													<h5 class="breadcrumbs-title mt-0 mb-0"><span>Crear ${seccion_legible}</span></h5>
-												</div>
-												<span class="modal-action modal-close"><i class="material-icons">close</i></span>
+						<form method="POST" id="${seccion_singular}_form">
+							<div class="modal-header">
+								<div id="breadcrumbs-wrapper" class="breadcrumbs-bg-image">
+									<div class="container mt-0">
+										<div class="row mb-0">
+											<div class="col s12 m11 l11">
+												<h5 class="breadcrumbs-title mt-0 mb-0"><span>Crear ${seccion_legible}</span></h5>
 											</div>
+											<span class="modal-action modal-close"><i class="material-icons">close</i></span>
 										</div>
 									</div>
 								</div>
-								<div class="modal-content">
-									<div class="panel">
-										<div class="row">
-											<div class="col s12 m6 input-field">
-												<input type="text" name="usr_nombres" id="usr_nombres" placeholder="" autocomplete="off" onkeyup="validar(this)">
-												<label for="usr_nombres">Nombres<i class="requerido">*</i></label>
-												<div id="error.usr_nombres" class="form-error"></div>
-											</div>
-											<div class="col s12 m6 input-field">
-												<input type="text" name="usr_apellidos" id="usr_apellidos" placeholder="" autocomplete="off" onkeyup="validar(this)">
-												<label for="usr_apellidos">Apellidos<i class="requerido">*</i></label>
-												<div id="error.usr_apellidos" class="form-error"></div>
-											</div>
-											<div class="col s12 m6 input-field">
-												<input type="email" name="usr_email" id="usr_email" placeholder="" autocomplete="off" onkeyup="validar(this)">
-												<label for="usr_email">Correo electrónico<i class="requerido">*</i></label>
-												<div id="error.usr_email" class="form-error"></div>
-											</div>
-											<div class="col s12 m6 select">
-												<label for="usr_rol">Rol</label><i class="requerido">*</i>
-												<select name="usr_rol" id="usr_rol" onchange="validar(this)">
-													${optionsRol}
-												</select>
-												<div id="error.usr_rol" class="form-error"></div>
-											</div>
-											<div class="col s12 m6 input-field">
-												<input type="password" name="usr_password" id="usr_password" placeholder="" autocomplete="off" onkeyup="validar(this)">
-												<label for="usr_password">Contraseña<i class="requerido">*</i></label>
-												<div id="error.usr_password" class="form-error"></div>
-											</div>
-											<div class="col s12 m6 input-field">
-												<input type="password" name="usr_password2" id="usr_password2" placeholder="" autocomplete="off" onkeyup="validar(this)">
-												<label for="usr_password2">Cofirmar contraseña<i class="requerido">*</i></label>
-												<div id="error.usr_password2" class="form-error"></div>
-											</div>
-											<div class="col s12 m6 select">
-												<label for="est_id">Estado</label><i class="requerido">*</i>
-												<select name="est_id" id="est_id" onchange="validar(this)">
-													${optionEstados}
-												</select>
-												<div id="error.est_id" class="form-error"></div>
-											</div>
+							</div>
+							<div class="modal-content">
+								<div class="panel">
+									<div class="row">
+										<div class="col s12 m6 input-field">
+											<input type="text" name="usr_nombres" id="usr_nombres" placeholder="" autocomplete="off" onkeyup="validar(this)">
+											<label for="usr_nombres">Nombres<i class="requerido">*</i></label>
+											<div id="error.usr_nombres" class="form-error"></div>
+										</div>
+										<div class="col s12 m6 input-field">
+											<input type="text" name="usr_apellidos" id="usr_apellidos" placeholder="" autocomplete="off" onkeyup="validar(this)">
+											<label for="usr_apellidos">Apellidos<i class="requerido">*</i></label>
+											<div id="error.usr_apellidos" class="form-error"></div>
+										</div>
+										<div class="col s12 m6 input-field">
+											<input type="email" name="usr_email" id="usr_email" placeholder="" autocomplete="off" onkeyup="validar(this)">
+											<label for="usr_email">Correo electrónico<i class="requerido">*</i></label>
+											<div id="error.usr_email" class="form-error"></div>
+										</div>
+										<div class="col s12 m6 select">
+											<label for="usr_rol">Rol</label><i class="requerido">*</i>
+											<select name="usr_rol" id="usr_rol" onchange="validar(this)">
+												${optionsRol}
+											</select>
+											<div id="error.usr_rol" class="form-error"></div>
+										</div>
+										<div class="col s12 m6 input-field">
+											<input type="password" name="usr_password" id="usr_password" placeholder="" autocomplete="off" onkeyup="validar(this)">
+											<label for="usr_password">Contraseña<i class="requerido">*</i></label>
+											<div id="error.usr_password" class="form-error"></div>
+										</div>
+										<div class="col s12 m6 input-field">
+											<input type="password" name="usr_password2" id="usr_password2" placeholder="" autocomplete="off" onkeyup="validar(this)">
+											<label for="usr_password2">Cofirmar contraseña<i class="requerido">*</i></label>
+											<div id="error.usr_password2" class="form-error"></div>
+										</div>
+										<div class="col s12 m6 select">
+											<label for="est_id">Estado</label><i class="requerido">*</i>
+											<select name="est_id" id="est_id" onchange="validar(this)">
+												${optionEstados}
+											</select>
+											<div id="error.est_id" class="form-error"></div>
 										</div>
 									</div>
 								</div>
-								<div class="modal-footer">
-									<div class="row m-0">
-										<div class="col s12 m4 offset-m8 nput-field">
-											<input type="hidden" name="action" id="action" value="crear">
-											<button type="submit" id="action_${seccion_singular}" class="btn waves-effect waves-light btnppal">Crear ${seccion_legible}</button>
-										</div>
+							</div>
+							<div class="modal-footer">
+								<div class="row m-0">
+									<div class="col s12 m4 offset-m8 nput-field">
+										<input type="hidden" name="action" id="action" value="crear">
+										<button type="submit" id="action_${seccion_singular}" class="btn waves-effect waves-light btnppal">Crear ${seccion_legible}</button>
 									</div>
 								</div>
-							</form>`;
+							</div>
+						</form>`;
 						
 						$('#usr_rol').selectize();
 						$('#est_id').selectize();
@@ -504,5 +503,180 @@ const plantillas = (seccion, datos, rol=0, pagina=1, busqueda="", id=0, cmp) => 
 			}
 		}
 	}
-	
+	// TODO: MODULO Movimientos
+	else
+	if(seccion == "movimientos") 
+	{
+		const seccion_singular = "movimiento";
+		const seccion_legible = "Movimientos";
+
+		let botones_accesos = "";
+		if(validar_acceso('movimiento_crear', rol)){
+			botones_accesos = `
+				<div class="fixed-action-btn">
+					<a class="btn-floating btn-large btnppal" title="Cargar ${seccion_legible}" onclick="plantillas('${seccion_singular}_crear', '')" id="crear_${seccion_singular}">
+						<i class="large material-icons">add</i>
+					</a>
+				</div>`; 
+		}
+
+		return `
+		${botones_accesos}
+		<div class="row mb-5" id="${seccion}-container">
+			<div class="col m5 s12 pl-10">
+				<div id="registros" class="paginador-left"></div>
+			</div>
+			<div class="col m7 s12 pr-0">
+				<div class="paginador-right">
+					<ul class="pagination" id="paginador"></ul>
+				</div>
+			</div>
+		</div>
+		<div class="tabla">
+			<table class="striped borde">
+				<thead>
+					<tr>
+						<th class="table-10">ID</th>
+						<th class="table-10">Fecha</th>
+						<th class="table-10">Valor</th>
+						<th class="table-15">Detalle</th>
+						<th class="table-15">Centro de Costo</th>
+						<th class="table-10">Banco / Caja</th>
+						<th class="table-15">Empresa</th>
+						<th class="table-10">Acciones</th>
+					</tr>
+				</thead>
+				<tbody id="resultado"></tbody>
+			</table>
+		</div>
+		<div class="row mt-5">
+			<div class="col m5 s12"></div>
+			<div class="col m7 s12 pr-0">
+				<div class="paginador-right">
+					<ul class="pagination" id="paginadorB"></ul>
+				</div>
+			</div>
+		</div>`;
+	}
+	else
+	if(seccion == "movimientos_lista")
+	{
+		const modulo = "movimientos";
+		const seccion_singular = "movimiento";
+		const seccion_legible = "Movimientos";
+
+		//Acceso para botones
+		var botones_accesos = "";
+		if(validar_acceso('movimiento_ver', rol))
+			botones_accesos = botones_accesos + 
+			`<a onclick="plantillas('${seccion_singular}_ver','','','${pagina}','${busqueda}',${datos['usr_id']})" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue" title="Ver ${seccion_legible}"><i class="material-icons">visibility</i></a>`;
+		
+		if(validar_acceso('movimiento_editar', rol))
+			botones_accesos = botones_accesos + 
+			`<a onclick="plantillas('${seccion_singular}_editar','','','${pagina}','${busqueda}',${datos['usr_id']})" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue" title="Editar ${seccion_legible}"><i class="material-icons">edit</i></a>`;
+
+		if(validar_acceso('movimiento_eliminar', rol))
+			botones_accesos = botones_accesos + 
+			`<a onclick="eliminar_registro(${datos['usr_id']}, '${modulo}', ${pagina}, '${busqueda}')" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue" title="Eliminar ${seccion_legible}"><i class="material-icons">delete</i></a>`;
+
+		const sucursal = datos['ban_nombre'] != null ? `${datos['ban_numero']} - ${datos['ban_nombre']}` : ( datos['caj_nombre'] != null ? `${datos['caj_id']} - ${datos['caj_nombre']}` : "" ); 
+		
+		var contenedor = `  
+			<td>${datos['mov_id']}</td>
+			<td>${datos['mov_fecha']}</td>
+			<td>${ajustarPrecio(datos['mov_valor'])}</td>
+			<td>${datos['mov_detalle']}</td>
+			<td>${datos['cco_codigo']} - ${datos['cco_nombre']}</td>
+			<td>${sucursal}</td>
+			<td>${datos['emp_nombre']}</td>
+			<td>${botones_accesos}</td>`;
+
+		return contenedor;
+	}
+	else
+	if(seccion == "movimiento_crear")
+	{
+		const modulo = "movimientos";
+		const seccion_singular = "movimiento";
+		const seccion_legible = "Movimientos";
+
+		const modal = document.getElementById(`modal-${modulo}`);
+		modal.innerHTML = loaderComponent();
+
+		var xhr = new XMLHttpRequest();
+		var params 	= "idioma="+cms_idioma+"&action=obtener_crear";
+		xhr.open("POST", "inc/"+modulo+".php",true);
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhr.send(params);
+		xhr.onreadystatechange = function()
+		{
+			if(xhr.readyState == 4)
+			{
+				if(xhr.status == 200)
+				{
+					data = xhr.responseText.trim();
+					// console.log(data);
+					if(data < 0)
+						M.toast({html: 'Ha ocurrido un error. Por favor, intente de nuevo. Código: '+data, classes: 'toasterror'});
+					else
+					{
+						const tmp = data.split("::");
+						centros_global 	= JSON.parse(tmp[0]);
+						bancos_global 	= JSON.parse(tmp[1]);
+						cajas_global 	= JSON.parse(tmp[2]);
+						empresas_global = JSON.parse(tmp[3]);
+						const ultimo_mmovimiento = JSON.parse(tmp[4]);
+						tipos_global 	= JSON.parse(tmp[5]);
+
+						const indice = ultimo_mmovimiento == 0 ? ultimo_mmovimiento + 1 : ultimo_mmovimiento[0]['mov_id'] + 1;
+
+						modal.innerHTML = `
+						<form method="POST" id="${seccion_singular}_form">
+							<div class="modal-header">
+								<div id="breadcrumbs-wrapper" class="breadcrumbs-bg-image">
+									<div class="container mt-0">
+										<div class="row mb-0">
+											<div class="col s12 m11 l11">
+												<h5 class="breadcrumbs-title mt-0 mb-0"><span>Cargar ${seccion_legible}</span></h5>
+											</div>
+											<span class="modal-action modal-close"><i class="material-icons">close</i></span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="modal-content">
+								<div class="panel">
+									<div class="row" >
+										<div class="col s12 m12">
+											<ul class="collapsible custom-collapsible" id="mregistro"></ul>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<div class="row m-0">
+									<div class="col s12 m4 offset-m8 nput-field">
+										<input type="hidden" name="action" id="action" value="crear">
+										<button type="submit" id="action_${seccion_singular}" class="btn waves-effect waves-light btnppal">Guardar</button>
+									</div>
+								</div>
+							</div>
+						</form>`;
+
+						crear_movimiento(indice);
+						$('.collapsible').collapsible();
+						validacion_movimientos(modulo);
+					}
+
+				} else {
+					M.toast({html: "Ha ocurrido un error, verifique su conexión a Internet", classes: 'toasterror'});
+				}
+			}
+		}
+
+		$('#modal-'+modulo).modal({dismissible: false});
+		var instance = M.Modal.getInstance(modal);
+		instance.open();
+
+	}
 }

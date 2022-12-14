@@ -3,7 +3,8 @@
 	require '_funciones.php';
 	$toolSQL = new toolSQL();
 	$tools 	 = new tools();
-
+	$sesion = new session();
+	$sesion->obtenerCredenciales();
 
 	$creado = date("Y-m-d H:i:s");
 	$hora = date("His");

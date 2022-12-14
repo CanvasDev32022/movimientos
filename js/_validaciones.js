@@ -289,6 +289,60 @@ const validacion_usuarios = (seccion, validaciones) => {
 	});
 }
 
+// TODO: VALIDACION MODULO MOVIMIENTOS
+const validacion_movimientos = (seccion) => {
+
+	const seccion_singular = "movimiento";
+	const seccion_legible = "Movimientos";
+
+	const formulario = document.getElementById(`${seccion_singular}_form`);
+	formulario.addEventListener("submit", (e) => {
+		e.preventDefault();
+
+		const boton = document.getElementById(`action_${seccion_singular}`);
+		boton.setAttribute("disabled", "disabled");
+
+
+		const respuesta = validar_formulario(validaciones_global, false);
+		if(respuesta) {
+
+			var xhr = new XMLHttpRequest();
+			var params 	= $(formulario).serialize();
+			xhr.open("POST", "inc/"+seccion+".php",true);
+			xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xhr.send(params);
+			xhr.onreadystatechange = function()
+			{
+				if(xhr.readyState == 4)
+				{
+					if(xhr.status == 200)
+					{
+						data = xhr.responseText.trim();
+						console.log(data);
+						if(data < 0)
+							M.toast({html: 'Ha ocurrido un error. Por favor, intente de nuevo. Código: '+data, classes: 'toasterror'});
+						else
+						{
+							$(`#modal-${seccion}`).modal('close');
+							var variables = obtener_variables();
+							formulario.innerHTML = "";
+							cargar_registros(seccion, variables[0],variables[1]);
+						}
+						boton.removeAttribute("disabled");
+						
+					} else {
+						M.toast({html: "Ha ocurrido un error, verifique su conexión a Internet", classes: 'toasterror'});
+					}
+				}
+			}
+
+		} else {
+			boton.removeAttribute("disabled");
+		}
+
+	});
+}
+
 // TODO: funciones de error par FORM DATA
 function errorHandler(event) {
 	app.toast.show({text: 'Ha ocurrido un error. Intente de nuevo.',closeTimeout: 2000, cssClass: 'toasterror'});

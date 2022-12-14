@@ -1439,129 +1439,6 @@ const cargar_estadisticas = () => {
 	}
 }
 
-// TODO: CARGAR INVERSION cliente
-const cargar_inversion = (id, datos) => {
-
-	const cmp = document.getElementById('proyectos_inversion');
-
-	let contenedorInversion = "";
-	const cin_id 	= datos['cin_id'] 	 != undefined ? datos['cin_id'] : 0;
-	const pro_id 	= datos['pro_id'] 	 != undefined ? datos['pro_id'] : 0;
-	const cin_valor = datos['cin_valor'] != undefined ? datos['cin_valor'] : 0;
-
-	let optionProyectos = "";
-	for (var i = 0; i < proyectos_global.length; i++) {
-		const selected = pro_id == proyectos_global[i]['pro_id'] ? "selected" : "";
-		optionProyectos = optionProyectos + `<option value="${proyectos_global[i]['pro_id']}" ${selected}>${proyectos_global[i]['pro_nombre']}</option>`;
-	}
-
-	contenedorInversion = contenedorInversion + `
-	<tr id="inversion-${id}"> 
-		<td class="left-align">
-			<input type="hidden" name="cin_ids[]" id="cin-${id}" value="${cin_id}">
-			<select name="pro_id[]" id="pro-${id}" onchange="verificar_inversion(this)">
-				<option value="" selected disabled>Seleccione un proyecto...</option>
-				${optionProyectos}
-			</select>
-			<div id="error.pro-${id}" class="form-error"></div>
-		</td>
-		<td>
-			<input type="text" name="cin_valor[]" id="cinv-${id}" class="m-0" placeholder="" value="${ajustarPrecio(cin_valor)}" autocomplete="off" onkeyup="ajustar_valor(this)" onchange="verificar_inversion(this)">
-			<div id="error.cinv-${id}" class="form-error"></div>
-		</td>
-		<td>
-			<a onclick="eliminar_inversion(this, 'proyectos_inversion')" idC="inversion-${id}" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue" title="Eliminar"><i class="material-icons">remove</i></a>
-		</td>
-	</tr>`;
-
-	validaciones_dinversion.push(
-		[`cinv-${id}`, 	'', 'precio']
-	);
-	$(cmp).append(contenedorInversion);
-	$(`#pro-${id}`).selectize();
-}
-
-// TODO: Verificar los INVERSION existentes
-const verificar_inversion = (cmp) => {
-
-	let valor = cmp.value;
-	let id = cmp.id.split("-")[0];
-	let indice = cmp.id.split("-")[1];
-	// // TODO: Verificamos que el item no esté vacío
-	if(valor != "")
-	{
-		// TODO: Generamos un ID válido
-		do{
-			indice++;
-		}
-		while(document.getElementById(`${id}-${indice}`) != null)
-		if(document.getElementById(`${id}-${indice - 1}`).value != "") {
-			cargar_inversion(indice, []);
-		}
-	}
-}
-
-// TODO: Eliminar INVERSION de proyecto
-const eliminar_inversion = (cmp, seccion) => {
-	
-	const padre = document.getElementById(seccion);
-	const id = cmp.getAttribute("idC");
-	const hijo = document.getElementById(id);
-
-	const tmpE = padre.querySelectorAll("tr");
-	const elements = padre.querySelectorAll("tr")[tmpE.length - 1];
-
-	if(elements.id == id) {
-		M.toast({html: 'No se puede remover, se debe mantener al menos (1) elementos vacios.', classes: 'toastwarning'});
-	} else {
-		
-		const hijo_elements = hijo.querySelectorAll("input");
-		for (var i = 0; i < validaciones_dinversion.length; i++) {
-
-			for (var j = 0; j < hijo_elements.length; j++) {
-
-				const hijo_id = hijo_elements[j].id;
-
-				if(validaciones_dinversion[i][0] == hijo_id) {
-					validaciones_dinversion.splice(i, 1);
-				}
-			}
-		}
-		padre.removeChild(hijo)
-	}
-}
-
-const checkbox = (cmp, seccion) => {
-
-	const producto = cmp.id.split("-")[1];
-	const checked = cmp.checked ? 1 : 0;
-
-	var xhr = new XMLHttpRequest();
-	var params 	= `id=${producto}&activo=${checked}&action=visible`;
-	xhr.open("POST", "inc/"+seccion+".php",true);
-	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xhr.send(params);
-	xhr.onreadystatechange = function()
-	{
-		if(xhr.readyState == 4)
-		{
-			if(xhr.status == 200)
-			{
-				data = xhr.responseText.trim();
-				console.log(data);
-				if(data < 0)
-					M.toast({html: 'Ha ocurrido un error. Por favor, intente de nuevo. Código: '+data, classes: 'toasterror'});
-				else
-				{
-					// M.toast({html: 'Se ha guardado correctamente.', classes: 'toastdone'});
-				}
-			}
-			else
-				M.toast({html: "Ha ocurrido un error, verifique su conexión a Internet", classes: 'toasterror'});
-		}
-	}
-}
-
 // TODO: funcion para generar password encrypt
 function generarContraseña(tamaño){
 	var slug ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -1583,3 +1460,183 @@ function generarContraseña(tamaño){
 	`;
 	$('#modal-auxiliar1').modal('open');
 }
+
+const crear_movimiento = (indice) => {
+
+	const cmp = document.getElementById('mregistro');
+
+	let optionTipos = "";
+	for (var i = 0; i < tipos_global.length; i++)
+		optionTipos = optionTipos + `<option value="${tipos_global[i]['mtp_id']}">${tipos_global[i]['mtp_nombre']}</option>`;
+
+	let optionCentros = "";
+	for (var i = 0; i < centros_global.length; i++)
+		optionCentros = optionCentros + `<option value="${centros_global[i]['cco_id']}">${centros_global[i]['cco_codigo']} - ${centros_global[i]['cco_nombre']}</option>`;
+
+	let optionEmpresa = "";
+	for (var i = 0; i < empresas_global.length; i++)
+		optionEmpresa = optionEmpresa + `<option value="${empresas_global[i]['emp_id']}">${empresas_global[i]['emp_nombre']}</option>`;
+
+	let optionBancos = `<optgroup label="Bancos">`;
+	for (var i = 0; i < bancos_global.length; i++) {
+		const numeroTexto = bancos_global[i]['ban_numero'].toString();
+		const numero = numeroTexto.slice(numeroTexto.length - 2);
+		optionBancos = optionBancos + `<option value="${bancos_global[i]['ban_id']}:1">${numero} - ${bancos_global[i]['ban_nombre']}</option>`;
+	}
+
+	optionBancos = optionBancos + `</optgroup>`;
+
+	let optionCajas = `<optgroup label="Cajas">`;
+	for (var i = 0; i < cajas_global.length; i++)
+		optionCajas = optionCajas + `<option value="${cajas_global[i]['caj_id']}:2">${cajas_global[i]['caj_nombre']}</option>`;
+
+	optionCajas = optionCajas + `</optgroup>`;
+
+	let contenido = `
+	<li class="active" id="movimiento-${indice}">
+		<div class="collapsible-header collapsible-head">
+			<div class="collapsible-titulo truncate" id="titulo-${indice}">${indice}.</div>
+			<div class="collapsible-acciones">
+				<a onclick="eliminar_item(this, 'mregistro')" idC="movimiento-${indice}" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue"><i class="material-icons">remove</i></a>
+			</div>
+		</div>
+		<div class="collapsible-body">
+			<div class="row">
+				<div class="col s12 m3 input-field">
+					<input type="text" id="mov_id" value="${indice}" readonly>
+					<label>Consecutivo</label>
+				</div>
+				<div class="col s12 m3 input-field">
+					<input type="date" name="mov_fecha[]" id="mov_fecha-${indice}" placeholder="" autocomplete="off" onchange="validar(this)" onkeyup="validar(this)">
+					<label>Fecha</label>
+					<div class="form-error" id="error.mov_fecha-${indice}"></div>
+				</div>
+				<div class="col s12 m3">
+					<label>Tipo</label>
+					<select name="mtp_id[]" id="mtp_id-${indice}" onchange="verificar_item(this); validar(this)">
+						<option value="" selected disabled>Seleccione una opci&oacute;n</option>
+						${optionTipos}
+					</select>
+					<div class="form-error" id="error.mtp_id-${indice}"></div>
+				</div>
+				<div class="col s12 m3 input-field">
+					<input type="text" name="mov_valor[]" id="mov_valor-${indice}" placeholder="" autocomplete="off" onkeyup="ajustar_valor(this); validar(this)" onchange="verificar_item(this)" value="">
+					<label>Valor</label>
+					<div class="form-error" id="error.mov_valor-${indice}"></div>
+				</div>
+				<div class="col s12 m3 select">
+					<label>Centro de Costo</label>
+					<select name="cco_id[]" id="cco_id-${indice}" onchange="verificar_item(this); validar(this)">
+						<option value="" selected disabled>Seleccione una opci&oacute;n</option>
+						${optionCentros}
+					</select>
+					<div class="form-error" id="error.cco_id-${indice}"></div>
+				</div>
+				<div class="col s12 m3 select">
+					<label>Banco / Caja</label>
+					<select name="suc_id[]" id="suc_id-${indice}" onchange="verificar_item(this); validar(this)">
+						<option value="" selected disabled>Seleccione una opci&oacute;n</option>
+						${optionBancos}
+						${optionCajas}
+					</select>
+					<div class="form-error" id="error.suc_id-${indice}"></div>
+				</div>
+				<div class="col s12 m3 select">
+					<label>Empresa</label>
+					<select name="emp_id[]" id="emp_id-${indice}" onchange="verificar_item(this); validar(this)">
+						<option value="" selected disabled>Seleccione una opci&oacute;n</option>
+						${optionEmpresa}
+					</select>
+					<div class="form-error" id="error.emp_id-${indice}"></div>
+				</div>
+				<div class="col s12 m12">
+					<label>Detalle</label>
+					<textarea name="mov_detalle[]" id="mov_detalle-${indice}" class="materialize-textarea" autocomplete="off" onchange="verificar_item(this); validar(this)" onkeyup="titulo_item(this)"></textarea>
+					<div class="form-error" id="error.mov_detalle-${indice}"></div>
+				</div>
+				<div class="col s12 m12">
+					<label>Observaciones</label>
+					<textarea name="mov_observaciones[]" id="mov_observaciones-${indice}" class="materialize-textarea" autocomplete="off" onchange="verificar_item(this); validar(this)"></textarea>
+					<div class="form-error" id="error.mov_observaciones-${indice}"></div>
+				</div>
+			</div>
+		</div>
+	</li>`;
+
+	$(cmp).append(contenido);
+
+	document.getElementById(`mov_fecha-${indice}`).valueAsDate = new Date();
+	$(`#mtp_id-${indice}`).selectize();
+	$(`#cco_id-${indice}`).selectize();
+	$(`#suc_id-${indice}`).selectize();
+	$(`#emp_id-${indice}`).selectize();
+	M.updateTextFields();
+	// validaciones_global.push(
+	// 	[`mov_fecha-${indice}`, 		'', 'required'],
+	// 	[`mtp_id-${indice}`, 			'', 'required'],
+	// 	[`mov_valor-${indice}`, 		'', 'required'],
+	// 	[`cco_id-${indice}`, 			'', 'required'],
+	// 	[`suc_id-${indice}`, 			'', 'required'],
+	// 	[`emp_id-${indice}`, 			'', 'required'],
+	// 	[`mov_detalle-${indice}`,		'', 'required'],
+	// 	[`mov_observaciones-${indice}`, '', 'required'],
+	// );
+}
+
+// TODO: Funcion para sobre escribir el titulo del item
+const titulo_item = (cmp) => {
+	const titulo = cmp.value;
+	const id = cmp.id.split("-")[1];
+	document.getElementById(`titulo-${id}`).innerHTML = `${id}. ${titulo}`;
+}
+
+// TODO: Verificar los item existentes
+const verificar_item = (cmp) => {
+
+	let valor = cmp.value;
+	let id = cmp.id.split("-")[0];
+	let indice = cmp.id.split("-")[1];
+	// // TODO: Verificamos que el item no esté vacío
+	if(valor != "")
+	{
+		// TODO: Generamos un ID válido
+		do{
+			indice++;
+		}
+		while(document.getElementById(`${id}-${indice}`) != null);
+		if(document.getElementById(`${id}-${indice - 1}`).value != "") {
+			crear_movimiento(indice);
+		}
+	}
+}
+
+// TODO: eliminar_item
+const eliminar_item = (cmp, seccion) => {
+
+	const id 	= cmp.getAttribute("idC");
+	const padre = document.getElementById(seccion);
+	const hijo 	= document.getElementById(id);
+
+	const tmpE = padre.querySelectorAll("li");
+	const elements = padre.querySelectorAll("li")[tmpE.length - 1];
+
+	if(elements.id == id) {
+		M.toast({html: 'No se puede remover, se debe mantener al menos (1) elementos vacios.', classes: 'toastwarning'});
+	} else {
+		
+		const hijo_elements = hijo.querySelectorAll("input, select, textarea");
+		for (var i = 0; i < validaciones_global.length; i++) {
+
+			for (var j = 0; j < hijo_elements.length; j++) {
+
+				const hijo_id = hijo_elements[j].id;
+
+				if(validaciones_global[i][0] == hijo_id) {
+					validaciones_global.splice(i, 1);
+				}
+			}
+		}
+		padre.removeChild(hijo)
+	}
+}
+
