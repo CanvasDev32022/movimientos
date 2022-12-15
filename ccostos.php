@@ -1,16 +1,16 @@
 <?php
-	$index = 3;
+	$index = 2;
 	require('mod/header.php');
 	require('mod/aside.php');
 ?>
 
 <div class="container">
-	<div class="card-panel mb-10" >
-		<div id="crear-movimientos"></div>
-		<div class="mt-40" id="movimientos"></div>
+	<div class="card-panel">
+		<div id="crear-ccostos"></div>
+		<div class="mt-40" id="ccostos"></div>
 	</div>
 </div>
-<div id="modal-movimientos" class="modal modal-meddium modal-fixed-footer"></div>
+<div id="modal-ccostos" class="modal modal-meddium modal-fixed-footer"></div>
 <div id="modal-auxiliar1" class="modal modal-full modal-fixed-footer"></div>
 <div id="modal-auxiliar2" class="modal modal-full modal-fixed-footer"></div>
 
@@ -19,7 +19,7 @@
 ?>
 <script>
 	document.addEventListener("DOMContentLoaded", () => {
-		plantillas("movimiento_crear")
-		cargar_registros("movimientos", cms_pagina, cms_busqueda);
+		plantillas("ccosto_crear");
+		cargar_registros("ccostos", cms_pagina, cms_busqueda);
 	});
 </script>

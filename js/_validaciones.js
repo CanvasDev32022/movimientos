@@ -297,7 +297,7 @@ const validacion_movimientos = (event) => {
 	const seccion_singular = "movimiento";
 	const seccion_legible = "Movimientos";
 
-	let validaciones
+	let validaciones = [];
 	const formulario = event.target;
 	if(formulario.id == "movimiento_modal") {
 
@@ -351,6 +351,80 @@ const validacion_movimientos = (event) => {
 							formulario.innerHTML = "";
 						} else {
 							plantillas("movimiento_crear");
+						}
+						cargar_registros(seccion, variables[0],variables[1]);
+					}
+					boton.removeAttribute("disabled");
+					
+				} else {
+					M.toast({html: "Ha ocurrido un error, verifique su conexión a Internet", classes: 'toasterror'});
+				}
+			}
+		}
+
+	} else {
+		boton.removeAttribute("disabled");
+		M.toast({ html: "Existen campos requeridos sin completar!", classes: "toasterror" });
+	}
+}
+
+// TODO: VALIDACIONES MODULO CENTRO DE COSTOS
+const validacion_ccostos = (event) => {
+	event.preventDefault();
+
+	const seccion = "ccostos";
+	const seccion_singular = "ccosto";
+	const seccion_legible = "Centro de costo";
+
+	let validaciones = [];
+	const formulario = event.target;
+	if(formulario.id == "ccosto_modal") {
+
+		validaciones = [
+			[`cco_codigo`, 	'', 'required'],
+			[`cco_nombre`, 	'', 'required'],
+		];
+
+	} else {
+		validaciones = validaciones_global;
+	}
+
+	const boton = document.getElementById(`action_${seccion_singular}`);
+	boton.setAttribute("disabled", "disabled");
+
+	const respuesta = validar_formulario(validaciones, false);
+	if(respuesta) {
+
+		const id = document.getElementById('cco_id') != null ? document.getElementById('cco_id').value : 0;
+		var xhr = new XMLHttpRequest();
+		var params 	= $(formulario).serialize();
+		xhr.open("POST", "inc/"+seccion+".php",true);
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhr.send(params);
+		xhr.onreadystatechange = function()
+		{
+			if(xhr.readyState == 4)
+			{
+				if(xhr.status == 200)
+				{
+					data = xhr.responseText.trim();
+					console.log(data);
+					if(data < 0)
+						M.toast({html: 'Ha ocurrido un error. Por favor, intente de nuevo. Código: '+data, classes: 'toasterror'});
+					else
+					{
+						if(id == 0)
+							M.toast({html: `Los ${seccion_legible} se ha creado correctamente.`, classes: 'toastdone'});
+						else
+							M.toast({html: `El ${seccion_legible} se ha editado correctamente.`, classes: 'toastdone'});
+
+
+						var variables = obtener_variables();
+						if(formulario.id == "ccosto_modal") {
+							$(`#modal-${seccion}`).modal('close');
+							formulario.innerHTML = "";
+						} else {
+							plantillas("ccosto_crear");
 						}
 						cargar_registros(seccion, variables[0],variables[1]);
 					}

@@ -503,6 +503,189 @@ const plantillas = (seccion, datos, rol=0, pagina=1, busqueda="", id=0, cmp) => 
 			}
 		}
 	}
+	// TODO: MODULO CENTRO DE COSTOS
+	else
+	if(seccion == "ccostos")
+	{
+		const seccion_singular = "ccosto";
+		const seccion_legible = "Centro de costo";
+
+		return `
+		<div class="row mb-5" id="${seccion}-container">
+			<div class="col m5 s12 pl-10">
+				<div id="registros" class="paginador-left"></div>
+			</div>
+			<div class="col m7 s12 pr-0">
+				<div class="paginador-right">
+					<ul class="pagination" id="paginador"></ul>
+				</div>
+			</div>
+		</div>
+		<div class="tabla">
+			<table class="custom-table">
+				<thead>
+					<tr>
+						<th class="table-10">Código</th>
+						<th class="table-30">Nombre</th>
+						<th class="table-40">Observaciones</th>
+						<th class="table-20">Acciones</th>
+					</tr>
+				</thead>
+				<tbody id="resultado"></tbody>
+			</table>
+		</div>
+		<div class="row mt-5">
+			<div class="col m5 s12"></div>
+			<div class="col m7 s12 pr-0">
+				<div class="paginador-right">
+					<ul class="pagination" id="paginadorB"></ul>
+				</div>
+			</div>
+		</div>`;
+	}
+	else
+	if(seccion == "ccostos_lista")
+	{
+		const modulo = "ccostos";
+		const seccion_singular = "ccosto";
+		const seccion_legible = "Centro de costo";
+
+		//Acceso para botones
+		var botones_accesos = "";
+		if(validar_acceso('movimiento_ver', rol))
+			botones_accesos = botones_accesos + 
+			`<a onclick="plantillas('${seccion_singular}_ver','','','${pagina}','${busqueda}',${datos['cco_id']})" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue" title="Ver ${seccion_legible}"><i class="material-icons">visibility</i></a>`;
+		
+		if(validar_acceso('movimiento_editar', rol))
+			botones_accesos = botones_accesos + 
+			`<a onclick="plantillas('${seccion_singular}_editar','','','${pagina}','${busqueda}',${datos['cco_id']})" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue" title="Editar ${seccion_legible}"><i class="material-icons">edit</i></a>`;
+
+		if(validar_acceso('movimiento_eliminar', rol))
+			botones_accesos = botones_accesos + 
+			`<a onclick="eliminar_registro(${datos['cco_id']}, '${modulo}', ${pagina}, '${busqueda}')" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue" title="Eliminar ${seccion_legible}"><i class="material-icons">delete</i></a>`;
+
+		var contenedor = `  
+			<td>${datos['cco_codigo']}</td>
+			<td class="texto-azuloscuro">${datos['cco_nombre']}</td>
+			<td>${datos['cco_detalle']}</td>
+			<td>${botones_accesos}</td>`;
+
+		return contenedor;
+	}
+	else
+	if(seccion == "ccosto_crear")
+	{
+		const modulo = "ccostos";
+		const seccion_singular = "ccosto";
+		const seccion_legible = "Centro de costo";
+
+		const cmp = document.getElementById(`crear-${modulo}`);
+		cmp.innerHTML = loaderComponent();
+
+		cmp.innerHTML = `
+		<form method="POST" id="${seccion_singular}_form">
+			<ul class="collapsible custom-collapsible" id="ccostos-registros"></ul>
+			<div class="row m-0">
+				<div class="col s12 m3 offset-m9 nput-field">
+					<input type="hidden" name="action" id="action" value="crear">
+					<button type="submit" id="action_${seccion_singular}" class="btn waves-effect waves-light btnppal azulclaro">Guardar</button>
+				</div>
+			</div>
+		</form>`;
+
+		crear_ccosto();
+		$('.collapsible').collapsible();
+		document.getElementById(`${seccion_singular}_form`).addEventListener("submit", validacion_ccostos, false);
+	}
+	else
+	if(seccion == "ccosto_editar")
+	{
+		const modulo = "ccostos";
+		const seccion_singular = "ccosto";
+		const seccion_legible = "Centro de costo";
+
+		const modal = document.getElementById(`modal-${modulo}`);
+		modal.innerHTML = loaderComponent();
+
+		var xhr = new XMLHttpRequest();
+		var params = "idioma="+cms_idioma+"&id="+id+"&action=obtener_editar";
+		xhr.open("POST", "inc/"+modulo+".php",true);
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhr.send(params);
+		xhr.onreadystatechange = function()
+		{
+			if(xhr.readyState == 4)
+			{
+				if(xhr.status == 200)
+				{
+					var data = xhr.responseText.trim();
+					// console.log(data);
+					if(data < 0)
+						M.toast({html: 'Ha ocurrido un error. Por favor, intente de nuevo. Código: '+data, classes: 'toasterror'});
+					else
+					{
+						const tmp = data.split("::");
+						const datos = JSON.parse(tmp[0]);
+
+						modal.innerHTML = `
+						<form method="POST" id="${seccion_singular}_modal">
+							<div class="modal-header">
+								<div id="breadcrumbs-wrapper" class="breadcrumbs-bg-image">
+									<div class="container mt-0">
+										<div class="row mb-0">
+											<div class="col s12 m11 l11">
+												<h5 class="breadcrumbs-title mt-0 mb-0"><span>Editar ${seccion_legible}</span></h5>
+											</div>
+											<span class="modal-action modal-close"><i class="material-icons">close</i></span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="modal-content">
+								<div class="panel">
+									<input type="hidden" name="cco_id" id="cco_id" value="${datos[0]['cco_id']}">
+									<div class="row">
+										<div class="col s12 m3 input-field">
+											<input type="text" name="cco_codigo" id="cco_codigo" placeholder="" onkeyup="validar(this)" value="${datos[0]['cco_codigo']}">
+											<label>Código<i class="requerido">*</i></label>
+											<div class="form-error" id="error.cco_codigo"></div>
+										</div>
+										<div class="col s12 m9 input-field">
+											<input type="text" name="cco_nombre" id="cco_nombre" placeholder="" onkeyup="validar(this)" value="${datos[0]['cco_nombre']}">
+											<label>Nombre<i class="requerido">*</i></label>
+											<div class="form-error" id="error.cco_nombre"></div>
+										</div>
+										<div class="col s12 m12">
+											<label>Observación</label>
+											<textarea name="cco_detalle" id="cco_detalle" class="materialize-textarea" onkeyup="validar(this)">${datos[0]['cco_detalle']}</textarea>
+											<div class="form-error" id="error.cco_detalle"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<div class="row m-0">
+									<div class="col s12 m4 offset-m8 nput-field">
+										<input type="hidden" name="action" id="action" value="editar">
+										<button type="submit" id="action_${seccion_singular}" class="btn waves-effect waves-light btnppal">Editar ${seccion_legible}</button>
+									</div>
+								</div>
+							</div>
+						</form>`;
+						
+						M.updateTextFields();
+						document.getElementById(`${seccion_singular}_modal`).addEventListener("submit", validacion_ccostos, false);
+					}
+				}
+				else
+					M.toast({html: "Ha ocurrido un error, verifique su conexión a Internet", classes: 'toasterror'});
+			}
+		}
+
+		$('#modal-'+modulo).modal({dismissible: false});
+		var instance = M.Modal.getInstance(modal);
+		instance.open();
+	}
 	// TODO: MODULO Movimientos
 	else
 	if(seccion == "movimientos") 

@@ -1498,7 +1498,7 @@ const crear_movimiento = (indice = 1) => {
 		<div class="collapsible-header collapsible-head">
 			<div class="collapsible-titulo truncate" id="titulo-${indice}">${indice}.</div>
 			<div class="collapsible-acciones">
-				<a onclick="eliminar_item(this, 'mregistro')" idC="movimiento-${indice}" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue"><i class="material-icons">remove</i></a>
+				<a onclick="eliminar_item(this, 'mregistro', 'movimiento')" idC="movimiento-${indice}" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue"><i class="material-icons">remove</i></a>
 			</div>
 		</div>
 		<div class="collapsible-body">
@@ -1510,20 +1510,20 @@ const crear_movimiento = (indice = 1) => {
 				</div>
 				<div class="col s12 m4">
 					<label>Tipo</label><i class="requerido">*</i>
-					<select name="mtp_id[]" id="mtp_id-${indice}" onchange="verificar_item(this); validar(this)">
+					<select name="mtp_id[]" id="mtp_id-${indice}" onchange="verificar_item(this,'movimientos'); validar(this)">
 						<option value="" selected disabled>Seleccione una opci&oacute;n</option>
 						${optionTipos}
 					</select>
 					<div class="form-error" id="error.mtp_id-${indice}"></div>
 				</div>
 				<div class="col s12 m4 input-field">
-					<input type="text" name="mov_valor[]" id="mov_valor-${indice}" placeholder="" autocomplete="off" onkeyup="ajustar_valor(this); validar(this)" onchange="verificar_item(this)" value="">
+					<input type="text" name="mov_valor[]" id="mov_valor-${indice}" placeholder="" autocomplete="off" onkeyup="ajustar_valor(this); validar(this)" onchange="verificar_item(this,'movimientos');" value="">
 					<label>Valor<i class="requerido">*</i></label>
 					<div class="form-error" id="error.mov_valor-${indice}"></div>
 				</div>
 				<div class="col s12 m4 select">
 					<label>Centro de Costo</label><i class="requerido">*</i>
-					<select name="cco_id[]" id="cco_id-${indice}" onchange="verificar_item(this); validar(this)">
+					<select name="cco_id[]" id="cco_id-${indice}" onchange="verificar_item(this,'movimientos'); validar(this)">
 						<option value="" selected disabled>Seleccione una opci&oacute;n</option>
 						${optionCentros}
 					</select>
@@ -1531,7 +1531,7 @@ const crear_movimiento = (indice = 1) => {
 				</div>
 				<div class="col s12 m4 select">
 					<label>Banco / Caja</label><i class="requerido">*</i>
-					<select name="suc_id[]" id="suc_id-${indice}" onchange="verificar_item(this); validar(this)">
+					<select name="suc_id[]" id="suc_id-${indice}" onchange="verificar_item(this,'movimientos'); validar(this)">
 						<option value="" selected disabled>Seleccione una opci&oacute;n</option>
 						${optionBancos}
 						${optionCajas}
@@ -1540,7 +1540,7 @@ const crear_movimiento = (indice = 1) => {
 				</div>
 				<div class="col s12 m4 select">
 					<label>Empresa</label><i class="requerido">*</i>
-					<select name="emp_id[]" id="emp_id-${indice}" onchange="verificar_item(this); validar(this)">
+					<select name="emp_id[]" id="emp_id-${indice}" onchange="verificar_item(this,'movimientos'); validar(this)">
 						<option value="" selected disabled>Seleccione una opci&oacute;n</option>
 						${optionEmpresa}
 					</select>
@@ -1548,12 +1548,12 @@ const crear_movimiento = (indice = 1) => {
 				</div>
 				<div class="col s12 m12">
 					<label>Detalle<i class="requerido">*</i></label>
-					<textarea name="mov_detalle[]" id="mov_detalle-${indice}" class="materialize-textarea" autocomplete="off" onchange="verificar_item(this); validar(this)" onkeyup="titulo_item(this)"></textarea>
+					<textarea name="mov_detalle[]" id="mov_detalle-${indice}" class="materialize-textarea" autocomplete="off" onchange="verificar_item(this,'movimientos'); validar(this)" onkeyup="titulo_item(this)"></textarea>
 					<div class="form-error" id="error.mov_detalle-${indice}"></div>
 				</div>
 				<div class="col s12 m12">
 					<label>Observaciones</label>
-					<textarea name="mov_observaciones[]" id="mov_observaciones-${indice}" class="materialize-textarea" autocomplete="off" onchange="verificar_item(this); validar(this)"></textarea>
+					<textarea name="mov_observaciones[]" id="mov_observaciones-${indice}" class="materialize-textarea" autocomplete="off" onchange="verificar_item(this,'movimientos'); validar(this)"></textarea>
 					<div class="form-error" id="error.mov_observaciones-${indice}"></div>
 				</div>
 			</div>
@@ -1568,13 +1568,12 @@ const crear_movimiento = (indice = 1) => {
 	$(`#suc_id-${indice}`).selectize();
 	$(`#emp_id-${indice}`).selectize();
 	M.updateTextFields();
-	validar_item("movimiento", indice);
+	validar_movimiento("movimiento");
 }
 
 // TODO: Validar item dinamico
-const validar_item = (seccion) => {
+const validar_movimiento = (seccion) => {
 
-	// console.log({ seccion, id, validaciones });
 	const padre = document.getElementById("mregistro");
 	const hijos = padre.querySelectorAll("li");
 	const ultimo = Object.keys(hijos)[Object.keys(hijos).length - 1];
@@ -1616,35 +1615,85 @@ const validar_item = (seccion) => {
 	validaciones_global = validaciones;
 }
 
-// TODO: Funcion para sobre escribir el titulo del item
-const titulo_item = (cmp) => {
-	const titulo = cmp.value;
-	const id = cmp.id.split("-")[1];
-	document.getElementById(`titulo-${id}`).innerHTML = `${id}. ${titulo}`;
+// TODO: Crear centro de costos
+const crear_ccosto = (indice = 1) => {
+
+	const modulo = "ccostos";
+	const seccion_singular = "ccosto";
+	const seccion_legible = "Centro de costo";
+
+	const cmp = document.getElementById("ccostos-registros");
+
+	let contenido = `
+	<li id="ccosto-${indice}">
+		<div class="collapsible-header collapsible-head">
+			<div class="collapsible-titulo truncate" id="titulo-${indice}">${indice}.</div>
+			<div class="collapsible-acciones">
+				<a onclick="eliminar_item(this, 'ccostos-registros', 'ccostos')" idC="ccosto-${indice}" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue"><i class="material-icons">remove</i></a>
+			</div>
+		</div>
+		<div class="collapsible-body">
+			<div class="row">
+				<div class="col s12 m3 input-field">
+					<input type="text" name="cco_codigo[]" id="cco_codigo-${indice}" placeholder="" onkeyup="validar(this); verificar_item(this, 'ccostos')">
+					<label>Código<i class="requerido">*</i></label>
+					<div class="form-error" id="error.cco_codigo-${indice}"></div>
+				</div>
+				<div class="col s12 m9 input-field">
+					<input type="text" name="cco_nombre[]" id="cco_nombre-${indice}" placeholder="" onkeyup="validar(this); verificar_item(this, 'ccostos'); titulo_item(this)">
+					<label>Nombre<i class="requerido">*</i></label>
+					<div class="form-error" id="error.cco_nombre-${indice}"></div>
+				</div>
+				<div class="col s12 m12">
+					<label>Observación</label>
+					<textarea name="cco_detalle[]" id="cco_detalle-${indice}" class="materialize-textarea" onkeyup="validar(this)"></textarea>
+					<div class="form-error" id="error.cco_detalle-${indice}"></div>
+				</div>
+			</div>
+		</div>
+	</li>`;
+
+	$(cmp).append(contenido);
+	M.updateTextFields();
+	validar_ccosto("ccostos");
 }
 
-// TODO: Verificar los item existentes
-const verificar_item = (cmp) => {
+// TODO: Validar item dinamico
+const validar_ccosto = (seccion) => {
 
-	let valor = cmp.value;
-	let id = cmp.id.split("-")[0];
-	let indice = cmp.id.split("-")[1];
-	// // TODO: Verificamos que el item no esté vacío
-	if(valor != "")
-	{
-		// TODO: Generamos un ID válido
-		do{
-			indice++;
-		}
-		while(document.getElementById(`${id}-${indice}`) != null);
-		if(document.getElementById(`${id}-${indice - 1}`).value != "") {
-			crear_movimiento(indice);
-		}
+	const padre = document.getElementById("ccostos-registros");
+	const hijos = padre.querySelectorAll("li");
+	const ultimo = Object.keys(hijos)[Object.keys(hijos).length - 1];
+
+	let validaciones = [];
+	for (var i = 0; i < hijos.length; i++) {
+
+		const indice = hijos[i].id.split("-")[1];
+
+		if(hijos.length == 1) {
+			
+			validaciones.push(
+				[`cco_codigo-${indice}`, 	'', 'required'],
+				[`cco_nombre-${indice}`, 	'', 'required'],
+			);
+
+		} else {
+			if(hijos[i].id != hijos[ultimo].id) {
+
+				validaciones.push(
+					[`cco_codigo-${indice}`, 	'', 'required'],
+					[`cco_nombre-${indice}`, 	'', 'required'],
+				);
+
+			}
+		}	
 	}
+
+	validaciones_global = validaciones;
 }
 
 // TODO: eliminar_item
-const eliminar_item = (cmp, seccion) => {
+const eliminar_item = (cmp, seccion, modulo) => {
 
 	const id 	= cmp.getAttribute("idC");
 	const padre = document.getElementById(seccion);
@@ -1658,7 +1707,44 @@ const eliminar_item = (cmp, seccion) => {
 	} else {
 			
 		padre.removeChild(hijo);
-		validar_item("movimiento");
+		if(modulo == "movimientos") {
+			validar_movimiento(modulo);
+		} else 
+		if(modulo == "ccostos") {
+			validar_ccosto(modulo);
+		}
 	}
 }
 
+// TODO: Verificar los item existentes
+const verificar_item = (cmp, modulo) => {
+
+	let valor = cmp.value;
+	let id = cmp.id.split("-")[0];
+	let indice = cmp.id.split("-")[1];
+	// // TODO: Verificamos que el item no esté vacío
+	if(valor != "")
+	{
+		// TODO: Generamos un ID válido
+		do{
+			indice++;
+		}
+		while(document.getElementById(`${id}-${indice}`) != null);
+		if(document.getElementById(`${id}-${indice - 1}`).value != "") {
+
+			if(modulo == "movimientos") {
+				crear_movimiento(indice);
+			} else 
+			if(modulo == "ccostos") {
+				crear_ccosto(indice);
+			}
+		}
+	}
+}
+
+// TODO: Funcion para sobre escribir el titulo del item
+const titulo_item = (cmp) => {
+	const titulo = cmp.value;
+	const id = cmp.id.split("-")[1];
+	document.getElementById(`titulo-${id}`).innerHTML = `${id}. ${titulo}`;
+}
