@@ -290,57 +290,82 @@ const validacion_usuarios = (seccion, validaciones) => {
 }
 
 // TODO: VALIDACION MODULO MOVIMIENTOS
-const validacion_movimientos = (seccion) => {
+const validacion_movimientos = (event) => {
+	event.preventDefault();
 
+	const seccion = "movimientos";
 	const seccion_singular = "movimiento";
 	const seccion_legible = "Movimientos";
 
-	const formulario = document.getElementById(`${seccion_singular}_form`);
-	formulario.addEventListener("submit", (e) => {
-		e.preventDefault();
+	let validaciones
+	const formulario = event.target;
+	if(formulario.id == "movimiento_modal") {
 
-		const boton = document.getElementById(`action_${seccion_singular}`);
-		boton.setAttribute("disabled", "disabled");
+		validaciones = [
+			[`mov_fecha`, 		'', 'required'],
+			[`mtp_id`, 			'', 'required'],
+			[`mov_valor`, 		'', 'required'],
+			[`cco_id`, 			'', 'required'],
+			[`suc_id`, 			'', 'required'],
+			[`emp_id`, 			'', 'required'],
+			[`mov_detalle`,		'', 'required'],
+		];
 
+	} else {
+		validaciones = validaciones_global;
+	}
 
-		const respuesta = validar_formulario(validaciones_global, false);
-		if(respuesta) {
+	const boton = document.getElementById(`action_${seccion_singular}`);
+	boton.setAttribute("disabled", "disabled");
 
-			var xhr = new XMLHttpRequest();
-			var params 	= $(formulario).serialize();
-			xhr.open("POST", "inc/"+seccion+".php",true);
-			xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			xhr.send(params);
-			xhr.onreadystatechange = function()
+	const respuesta = validar_formulario(validaciones, false);
+	if(respuesta) {
+
+		const id = document.getElementById('mov_id') != null ? document.getElementById('mov_id').value : 0;
+		var xhr = new XMLHttpRequest();
+		var params 	= $(formulario).serialize();
+		xhr.open("POST", "inc/"+seccion+".php",true);
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhr.send(params);
+		xhr.onreadystatechange = function()
+		{
+			if(xhr.readyState == 4)
 			{
-				if(xhr.readyState == 4)
+				if(xhr.status == 200)
 				{
-					if(xhr.status == 200)
+					data = xhr.responseText.trim();
+					console.log(data);
+					if(data < 0)
+						M.toast({html: 'Ha ocurrido un error. Por favor, intente de nuevo. Código: '+data, classes: 'toasterror'});
+					else
 					{
-						data = xhr.responseText.trim();
-						console.log(data);
-						if(data < 0)
-							M.toast({html: 'Ha ocurrido un error. Por favor, intente de nuevo. Código: '+data, classes: 'toasterror'});
+						if(id == 0)
+							M.toast({html: `Los ${seccion_legible} se ha creado correctamente.`, classes: 'toastdone'});
 						else
-						{
+							M.toast({html: `El ${seccion_legible} se ha editado correctamente.`, classes: 'toastdone'});
+
+
+						var variables = obtener_variables();
+						if(formulario.id == "movimiento_modal") {
 							$(`#modal-${seccion}`).modal('close');
-							var variables = obtener_variables();
 							formulario.innerHTML = "";
-							cargar_registros(seccion, variables[0],variables[1]);
+						} else {
+							plantillas("movimiento_crear");
 						}
-						boton.removeAttribute("disabled");
-						
-					} else {
-						M.toast({html: "Ha ocurrido un error, verifique su conexión a Internet", classes: 'toasterror'});
+						cargar_registros(seccion, variables[0],variables[1]);
 					}
+					boton.removeAttribute("disabled");
+					
+				} else {
+					M.toast({html: "Ha ocurrido un error, verifique su conexión a Internet", classes: 'toasterror'});
 				}
 			}
-
-		} else {
-			boton.removeAttribute("disabled");
 		}
 
-	});
+	} else {
+		boton.removeAttribute("disabled");
+		M.toast({ html: "Existen campos requeridos sin completar!", classes: "toasterror" });
+	}
 }
 
 // TODO: funciones de error par FORM DATA

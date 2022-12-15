@@ -3,7 +3,7 @@
 	require('mod/header.php');
 	require('mod/aside.php');
 ?>
-
+<div class="container" id="crear-movimientos"></div>
 <div class="container">
 	<div class="card-panel mb-10" id="movimientos"></div>
 </div>
@@ -16,6 +16,7 @@
 ?>
 <script>
 	document.addEventListener("DOMContentLoaded", () => {
+		plantillas("movimiento_crear")
 		cargar_registros("movimientos", cms_pagina, cms_busqueda);
 	});
 </script>

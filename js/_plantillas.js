@@ -29,7 +29,7 @@ const plantillas = (seccion, datos, rol=0, pagina=1, busqueda="", id=0, cmp) => 
 			</div>
 		</div>
 		<div class="tabla">
-			<table class="striped borde">
+			<table class="custom-table">
 				<thead>
 					<tr>
 						<th class="table-40">Nombres</th>
@@ -510,18 +510,7 @@ const plantillas = (seccion, datos, rol=0, pagina=1, busqueda="", id=0, cmp) => 
 		const seccion_singular = "movimiento";
 		const seccion_legible = "Movimientos";
 
-		let botones_accesos = "";
-		if(validar_acceso('movimiento_crear', rol)){
-			botones_accesos = `
-				<div class="fixed-action-btn">
-					<a class="btn-floating btn-large btnppal" title="Cargar ${seccion_legible}" onclick="plantillas('${seccion_singular}_crear', '')" id="crear_${seccion_singular}">
-						<i class="large material-icons">add</i>
-					</a>
-				</div>`; 
-		}
-
 		return `
-		${botones_accesos}
 		<div class="row mb-5" id="${seccion}-container">
 			<div class="col m5 s12 pl-10">
 				<div id="registros" class="paginador-left"></div>
@@ -533,7 +522,7 @@ const plantillas = (seccion, datos, rol=0, pagina=1, busqueda="", id=0, cmp) => 
 			</div>
 		</div>
 		<div class="tabla">
-			<table class="striped borde">
+			<table class="custom-table">
 				<thead>
 					<tr>
 						<th class="table-10">ID</th>
@@ -569,26 +558,34 @@ const plantillas = (seccion, datos, rol=0, pagina=1, busqueda="", id=0, cmp) => 
 		var botones_accesos = "";
 		if(validar_acceso('movimiento_ver', rol))
 			botones_accesos = botones_accesos + 
-			`<a onclick="plantillas('${seccion_singular}_ver','','','${pagina}','${busqueda}',${datos['usr_id']})" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue" title="Ver ${seccion_legible}"><i class="material-icons">visibility</i></a>`;
+			`<a onclick="plantillas('${seccion_singular}_ver','','','${pagina}','${busqueda}',${datos['mov_id']})" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue" title="Ver ${seccion_legible}"><i class="material-icons">visibility</i></a>`;
 		
 		if(validar_acceso('movimiento_editar', rol))
 			botones_accesos = botones_accesos + 
-			`<a onclick="plantillas('${seccion_singular}_editar','','','${pagina}','${busqueda}',${datos['usr_id']})" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue" title="Editar ${seccion_legible}"><i class="material-icons">edit</i></a>`;
+			`<a onclick="plantillas('${seccion_singular}_editar','','','${pagina}','${busqueda}',${datos['mov_id']})" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue" title="Editar ${seccion_legible}"><i class="material-icons">edit</i></a>`;
 
 		if(validar_acceso('movimiento_eliminar', rol))
 			botones_accesos = botones_accesos + 
-			`<a onclick="eliminar_registro(${datos['usr_id']}, '${modulo}', ${pagina}, '${busqueda}')" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue" title="Eliminar ${seccion_legible}"><i class="material-icons">delete</i></a>`;
+			`<a onclick="eliminar_registro(${datos['mov_id']}, '${modulo}', ${pagina}, '${busqueda}')" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue" title="Eliminar ${seccion_legible}"><i class="material-icons">delete</i></a>`;
 
-		const sucursal = datos['ban_nombre'] != null ? `${datos['ban_numero']} - ${datos['ban_nombre']}` : ( datos['caj_nombre'] != null ? `${datos['caj_id']} - ${datos['caj_nombre']}` : "" ); 
-		
+		let sucursal = "";
+		if(datos['ban_nombre'] != null) {
+			const numeroTexto = datos['ban_numero'].toString();
+			const mask_numero = numeroTexto.slice(numeroTexto.length - 2);
+			sucursal = `${mask_numero} - ${datos['ban_nombre']}`;
+		} else {
+			sucursal = `${datos['caj_id']} - ${datos['caj_nombre']}`;
+		};
+
+		const claseTipo = datos['mtp_slug'] == "+" ? "mov-add" : "mov-deg";
 		var contenedor = `  
 			<td>${datos['mov_id']}</td>
 			<td>${datos['mov_fecha']}</td>
-			<td>${ajustarPrecio(datos['mov_valor'])}</td>
+			<td class="mov ${claseTipo}"><i>${datos['mtp_slug']}</i> ${ajustarPrecio(datos['mov_valor'])}</td>
 			<td>${datos['mov_detalle']}</td>
 			<td>${datos['cco_codigo']} - ${datos['cco_nombre']}</td>
 			<td>${sucursal}</td>
-			<td>${datos['emp_nombre']}</td>
+			<td class="texto-azuloscuro">${datos['emp_nombre']}</td>
 			<td>${botones_accesos}</td>`;
 
 		return contenedor;
@@ -600,8 +597,8 @@ const plantillas = (seccion, datos, rol=0, pagina=1, busqueda="", id=0, cmp) => 
 		const seccion_singular = "movimiento";
 		const seccion_legible = "Movimientos";
 
-		const modal = document.getElementById(`modal-${modulo}`);
-		modal.innerHTML = loaderComponent();
+		const cmp = document.getElementById(`crear-${modulo}`);
+		cmp.innerHTML = loaderComponent();
 
 		var xhr = new XMLHttpRequest();
 		var params 	= "idioma="+cms_idioma+"&action=obtener_crear";
@@ -625,19 +622,109 @@ const plantillas = (seccion, datos, rol=0, pagina=1, busqueda="", id=0, cmp) => 
 						bancos_global 	= JSON.parse(tmp[1]);
 						cajas_global 	= JSON.parse(tmp[2]);
 						empresas_global = JSON.parse(tmp[3]);
-						const ultimo_mmovimiento = JSON.parse(tmp[4]);
-						tipos_global 	= JSON.parse(tmp[5]);
+						tipos_global 	= JSON.parse(tmp[4]);
 
-						const indice = ultimo_mmovimiento == 0 ? ultimo_mmovimiento + 1 : ultimo_mmovimiento[0]['mov_id'] + 1;
+						cmp.innerHTML = `
+						<form method="POST" id="${seccion_singular}_form">
+							<ul class="collapsible custom-collapsible" id="mregistro"></ul>
+							<div class="row m-0">
+								<div class="col s12 m3 offset-m9 nput-field">
+									<input type="hidden" name="action" id="action" value="crear">
+									<button type="submit" id="action_${seccion_singular}" class="btn waves-effect waves-light btnppal azulclaro">Guardar</button>
+								</div>
+							</div>
+						</form>`;
+
+						crear_movimiento();
+						$('.collapsible').collapsible();
+						document.getElementById(`${seccion_singular}_form`).addEventListener("submit", validacion_movimientos, false);
+					}
+
+				} else {
+					M.toast({html: "Ha ocurrido un error, verifique su conexión a Internet", classes: 'toasterror'});
+				}
+			}
+		}
+	}
+	else
+	if(seccion == "movimiento_editar")
+	{
+		const modulo = "movimientos";
+		const seccion_singular = "movimiento";
+		const seccion_legible = "Movimiento";
+
+		const modal = document.getElementById(`modal-${modulo}`);
+		modal.innerHTML = loaderComponent();
+
+		var xhr = new XMLHttpRequest();
+		var params = "idioma="+cms_idioma+"&id="+id+"&action=obtener_editar";
+		xhr.open("POST", "inc/"+modulo+".php",true);
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhr.send(params);
+		xhr.onreadystatechange = function()
+		{
+			if(xhr.readyState == 4)
+			{
+				if(xhr.status == 200)
+				{
+					var data = xhr.responseText.trim();
+					// console.log(data);
+					if(data < 0)
+						M.toast({html: 'Ha ocurrido un error. Por favor, intente de nuevo. Código: '+data, classes: 'toasterror'});
+					else
+					{
+						const tmp = data.split("::");
+						const datos 	= JSON.parse(tmp[0]);
+						const centros 	= JSON.parse(tmp[1]);
+						const bancos 	= JSON.parse(tmp[2]);
+						const cajas 	= JSON.parse(tmp[3]);
+						const empresas 	= JSON.parse(tmp[4]);
+						const tipos 	= JSON.parse(tmp[5]);
+
+						let optionTipos = "";
+						for (var i = 0; i < tipos.length; i++) {
+							const selected = datos[0]['mtp_id'] == tipos[i]['mtp_id'] ? "selected" : "";
+							optionTipos = optionTipos + `<option value="${tipos[i]['mtp_id']}" ${selected}>${tipos[i]['mtp_nombre']}</option>`;
+						}
+
+						let optionCentros = "";
+						for (var i = 0; i < centros.length; i++) {
+							const selected = datos[0]['cco_id'] == centros[i]['cco_id'] ? "selected" : "";
+							optionCentros = optionCentros + `<option value="${centros[i]['cco_id']}" ${selected}>${centros[i]['cco_codigo']} - ${centros[i]['cco_nombre']}</option>`;
+						}
+
+						let optionEmpresa = "";
+						for (var i = 0; i < empresas.length; i++) {
+							const selected = datos[0]['emp_id'] == empresas[i]['emp_id'] ? "selected" : "";
+							optionEmpresa = optionEmpresa + `<option value="${empresas[i]['emp_id']}" ${selected}>${empresas[i]['emp_nombre']}</option>`;
+						}
+
+						let optionBancos = `<optgroup label="Bancos">`;
+						for (var i = 0; i < bancos.length; i++) {
+							const numeroTexto = bancos[i]['ban_numero'].toString();
+							const numero = numeroTexto.slice(numeroTexto.length - 2);
+							const selected = datos[0]['ban_id'] == bancos[i]['ban_id'] ? "selected" : "";
+							optionBancos = optionBancos + `<option value="${bancos[i]['ban_id']}:1" ${selected}>${numero} - ${bancos[i]['ban_nombre']}</option>`;
+						}
+
+						optionBancos = optionBancos + `</optgroup>`;
+
+						let optionCajas = `<optgroup label="Cajas">`;
+						for (var i = 0; i < cajas.length; i++) {
+							const selected = datos[0]['caj_id'] == cajas[i]['caj_id'] ? "selected" : "";
+							optionCajas = optionCajas + `<option value="${cajas[i]['caj_id']}:2" ${selected}>${cajas[i]['caj_nombre']}</option>`;
+						}
+
+						optionCajas = optionCajas + `</optgroup>`;
 
 						modal.innerHTML = `
-						<form method="POST" id="${seccion_singular}_form">
+						<form method="POST" id="${seccion_singular}_modal">
 							<div class="modal-header">
 								<div id="breadcrumbs-wrapper" class="breadcrumbs-bg-image">
 									<div class="container mt-0">
 										<div class="row mb-0">
 											<div class="col s12 m11 l11">
-												<h5 class="breadcrumbs-title mt-0 mb-0"><span>Cargar ${seccion_legible}</span></h5>
+												<h5 class="breadcrumbs-title mt-0 mb-0"><span>Editar ${seccion_legible}</span></h5>
 											</div>
 											<span class="modal-action modal-close"><i class="material-icons">close</i></span>
 										</div>
@@ -646,9 +733,60 @@ const plantillas = (seccion, datos, rol=0, pagina=1, busqueda="", id=0, cmp) => 
 							</div>
 							<div class="modal-content">
 								<div class="panel">
-									<div class="row" >
+									<input type="hidden" name="mov_id" id="mov_id" value="${datos[0]['mov_id']}">
+									<div class="row">
+										<div class="col s12 m4 input-field">
+											<input type="date" name="mov_fecha" id="mov_fecha" placeholder="" autocomplete="off" onchange="validar(this)" onkeyup="validar(this)" value="${datos[0]['mov_fecha']}">
+											<label>Fecha<i class="requerido">*</i></label>
+											<div class="form-error" id="error.mov_fecha"></div>
+										</div>
+										<div class="col s12 m4">
+											<label>Tipo</label><i class="requerido">*</i>
+											<select name="mtp_id" id="mtp_id" onchange="validar(this)">
+												<option value="" selected disabled>Seleccione una opci&oacute;n</option>
+												${optionTipos}
+											</select>
+											<div class="form-error" id="error.mtp_id"></div>
+										</div>
+										<div class="col s12 m4 input-field">
+											<input type="text" name="mov_valor" id="mov_valor" placeholder="" autocomplete="off" onkeyup="ajustar_valor(this); validar(this)" value="${ajustarPrecio(datos[0]['mov_valor'])}">
+											<label>Valor<i class="requerido">*</i></label>
+											<div class="form-error" id="error.mov_valor"></div>
+										</div>
+										<div class="col s12 m4 select">
+											<label>Centro de Costo</label><i class="requerido">*</i>
+											<select name="cco_id" id="cco_id" onchange="validar(this)">
+												<option value="" selected disabled>Seleccione una opci&oacute;n</option>
+												${optionCentros}
+											</select>
+											<div class="form-error" id="error.cco_id"></div>
+										</div>
+										<div class="col s12 m4 select">
+											<label>Banco / Caja</label><i class="requerido">*</i>
+											<select name="suc_id" id="suc_id" onchange="validar(this)">
+												<option value="" selected disabled>Seleccione una opci&oacute;n</option>
+												${optionBancos}
+												${optionCajas}
+											</select>
+											<div class="form-error" id="error.suc_id"></div>
+										</div>
+										<div class="col s12 m4 select">
+											<label>Empresa</label><i class="requerido">*</i>
+											<select name="emp_id" id="emp_id" onchange="validar(this)">
+												<option value="" selected disabled>Seleccione una opci&oacute;n</option>
+												${optionEmpresa}
+											</select>
+											<div class="form-error" id="error.emp_id"></div>
+										</div>
 										<div class="col s12 m12">
-											<ul class="collapsible custom-collapsible" id="mregistro"></ul>
+											<label>Detalle<i class="requerido">*</i></label>
+											<textarea name="mov_detalle" id="mov_detalle" class="materialize-textarea" autocomplete="off" onchange="validar(this)" onkeyup="titulo_item(this)">${datos[0]['mov_detalle']}</textarea>
+											<div class="form-error" id="error.mov_detalle"></div>
+										</div>
+										<div class="col s12 m12">
+											<label>Observaciones</label>
+											<textarea name="mov_observaciones" id="mov_observaciones" class="materialize-textarea" autocomplete="off" onchange="validar(this)">${datos[0]['mov_observacion']}</textarea>
+											<div class="form-error" id="error.mov_observaciones"></div>
 										</div>
 									</div>
 								</div>
@@ -656,27 +794,28 @@ const plantillas = (seccion, datos, rol=0, pagina=1, busqueda="", id=0, cmp) => 
 							<div class="modal-footer">
 								<div class="row m-0">
 									<div class="col s12 m4 offset-m8 nput-field">
-										<input type="hidden" name="action" id="action" value="crear">
-										<button type="submit" id="action_${seccion_singular}" class="btn waves-effect waves-light btnppal">Guardar</button>
+										<input type="hidden" name="action" id="action" value="editar">
+										<button type="submit" id="action_${seccion_singular}" class="btn waves-effect waves-light btnppal">Editar ${seccion_legible}</button>
 									</div>
 								</div>
 							</div>
 						</form>`;
-
-						crear_movimiento(indice);
-						$('.collapsible').collapsible();
-						validacion_movimientos(modulo);
+						
+						$(`#mtp_id`).selectize();
+						$(`#cco_id`).selectize();
+						$(`#suc_id`).selectize();
+						$(`#emp_id`).selectize();
+						M.updateTextFields();
+						document.getElementById(`${seccion_singular}_modal`).addEventListener("submit", validacion_movimientos, false);
 					}
-
-				} else {
-					M.toast({html: "Ha ocurrido un error, verifique su conexión a Internet", classes: 'toasterror'});
 				}
+				else
+					M.toast({html: "Ha ocurrido un error, verifique su conexión a Internet", classes: 'toasterror'});
 			}
 		}
 
 		$('#modal-'+modulo).modal({dismissible: false});
 		var instance = M.Modal.getInstance(modal);
 		instance.open();
-
 	}
 }
