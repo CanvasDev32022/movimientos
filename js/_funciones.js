@@ -1461,7 +1461,8 @@ function generarContraseña(tamaño){
 	$('#modal-auxiliar1').modal('open');
 }
 
-const crear_movimiento = (indice) => {
+// TODO: Crear movimiento
+const crear_movimiento = (indice = 1) => {
 
 	const cmp = document.getElementById('mregistro');
 
@@ -1493,7 +1494,7 @@ const crear_movimiento = (indice) => {
 	optionCajas = optionCajas + `</optgroup>`;
 
 	let contenido = `
-	<li class="active" id="movimiento-${indice}">
+	<li id="movimiento-${indice}">
 		<div class="collapsible-header collapsible-head">
 			<div class="collapsible-titulo truncate" id="titulo-${indice}">${indice}.</div>
 			<div class="collapsible-acciones">
@@ -1502,38 +1503,34 @@ const crear_movimiento = (indice) => {
 		</div>
 		<div class="collapsible-body">
 			<div class="row">
-				<div class="col s12 m3 input-field">
-					<input type="text" id="mov_id" value="${indice}" readonly>
-					<label>Consecutivo</label>
-				</div>
-				<div class="col s12 m3 input-field">
+				<div class="col s12 m4 input-field">
 					<input type="date" name="mov_fecha[]" id="mov_fecha-${indice}" placeholder="" autocomplete="off" onchange="validar(this)" onkeyup="validar(this)">
-					<label>Fecha</label>
+					<label>Fecha<i class="requerido">*</i></label>
 					<div class="form-error" id="error.mov_fecha-${indice}"></div>
 				</div>
-				<div class="col s12 m3">
-					<label>Tipo</label>
+				<div class="col s12 m4">
+					<label>Tipo</label><i class="requerido">*</i>
 					<select name="mtp_id[]" id="mtp_id-${indice}" onchange="verificar_item(this); validar(this)">
 						<option value="" selected disabled>Seleccione una opci&oacute;n</option>
 						${optionTipos}
 					</select>
 					<div class="form-error" id="error.mtp_id-${indice}"></div>
 				</div>
-				<div class="col s12 m3 input-field">
+				<div class="col s12 m4 input-field">
 					<input type="text" name="mov_valor[]" id="mov_valor-${indice}" placeholder="" autocomplete="off" onkeyup="ajustar_valor(this); validar(this)" onchange="verificar_item(this)" value="">
-					<label>Valor</label>
+					<label>Valor<i class="requerido">*</i></label>
 					<div class="form-error" id="error.mov_valor-${indice}"></div>
 				</div>
-				<div class="col s12 m3 select">
-					<label>Centro de Costo</label>
+				<div class="col s12 m4 select">
+					<label>Centro de Costo</label><i class="requerido">*</i>
 					<select name="cco_id[]" id="cco_id-${indice}" onchange="verificar_item(this); validar(this)">
 						<option value="" selected disabled>Seleccione una opci&oacute;n</option>
 						${optionCentros}
 					</select>
 					<div class="form-error" id="error.cco_id-${indice}"></div>
 				</div>
-				<div class="col s12 m3 select">
-					<label>Banco / Caja</label>
+				<div class="col s12 m4 select">
+					<label>Banco / Caja</label><i class="requerido">*</i>
 					<select name="suc_id[]" id="suc_id-${indice}" onchange="verificar_item(this); validar(this)">
 						<option value="" selected disabled>Seleccione una opci&oacute;n</option>
 						${optionBancos}
@@ -1541,8 +1538,8 @@ const crear_movimiento = (indice) => {
 					</select>
 					<div class="form-error" id="error.suc_id-${indice}"></div>
 				</div>
-				<div class="col s12 m3 select">
-					<label>Empresa</label>
+				<div class="col s12 m4 select">
+					<label>Empresa</label><i class="requerido">*</i>
 					<select name="emp_id[]" id="emp_id-${indice}" onchange="verificar_item(this); validar(this)">
 						<option value="" selected disabled>Seleccione una opci&oacute;n</option>
 						${optionEmpresa}
@@ -1550,7 +1547,7 @@ const crear_movimiento = (indice) => {
 					<div class="form-error" id="error.emp_id-${indice}"></div>
 				</div>
 				<div class="col s12 m12">
-					<label>Detalle</label>
+					<label>Detalle<i class="requerido">*</i></label>
 					<textarea name="mov_detalle[]" id="mov_detalle-${indice}" class="materialize-textarea" autocomplete="off" onchange="verificar_item(this); validar(this)" onkeyup="titulo_item(this)"></textarea>
 					<div class="form-error" id="error.mov_detalle-${indice}"></div>
 				</div>
@@ -1571,16 +1568,52 @@ const crear_movimiento = (indice) => {
 	$(`#suc_id-${indice}`).selectize();
 	$(`#emp_id-${indice}`).selectize();
 	M.updateTextFields();
-	// validaciones_global.push(
-	// 	[`mov_fecha-${indice}`, 		'', 'required'],
-	// 	[`mtp_id-${indice}`, 			'', 'required'],
-	// 	[`mov_valor-${indice}`, 		'', 'required'],
-	// 	[`cco_id-${indice}`, 			'', 'required'],
-	// 	[`suc_id-${indice}`, 			'', 'required'],
-	// 	[`emp_id-${indice}`, 			'', 'required'],
-	// 	[`mov_detalle-${indice}`,		'', 'required'],
-	// 	[`mov_observaciones-${indice}`, '', 'required'],
-	// );
+	validar_item("movimiento", indice);
+}
+
+// TODO: Validar item dinamico
+const validar_item = (seccion) => {
+
+	// console.log({ seccion, id, validaciones });
+	const padre = document.getElementById("mregistro");
+	const hijos = padre.querySelectorAll("li");
+	const ultimo = Object.keys(hijos)[Object.keys(hijos).length - 1];
+
+	let validaciones = [];
+	for (var i = 0; i < hijos.length; i++) {
+
+		const indice = hijos[i].id.split("-")[1];
+
+		if(hijos.length == 1) {
+			
+			validaciones.push(
+				[`mov_fecha-${indice}`, 		'', 'required'],
+				[`mtp_id-${indice}`, 			'', 'required'],
+				[`mov_valor-${indice}`, 		'', 'required'],
+				[`cco_id-${indice}`, 			'', 'required'],
+				[`suc_id-${indice}`, 			'', 'required'],
+				[`emp_id-${indice}`, 			'', 'required'],
+				[`mov_detalle-${indice}`,		'', 'required'],
+			);
+
+		} else {
+			if(hijos[i].id != hijos[ultimo].id) {
+
+				validaciones.push(
+					[`mov_fecha-${indice}`, 		'', 'required'],
+					[`mtp_id-${indice}`, 			'', 'required'],
+					[`mov_valor-${indice}`, 		'', 'required'],
+					[`cco_id-${indice}`, 			'', 'required'],
+					[`suc_id-${indice}`, 			'', 'required'],
+					[`emp_id-${indice}`, 			'', 'required'],
+					[`mov_detalle-${indice}`,		'', 'required'],
+				);
+
+			}
+		}	
+	}
+
+	validaciones_global = validaciones;
 }
 
 // TODO: Funcion para sobre escribir el titulo del item
@@ -1623,20 +1656,9 @@ const eliminar_item = (cmp, seccion) => {
 	if(elements.id == id) {
 		M.toast({html: 'No se puede remover, se debe mantener al menos (1) elementos vacios.', classes: 'toastwarning'});
 	} else {
-		
-		const hijo_elements = hijo.querySelectorAll("input, select, textarea");
-		for (var i = 0; i < validaciones_global.length; i++) {
-
-			for (var j = 0; j < hijo_elements.length; j++) {
-
-				const hijo_id = hijo_elements[j].id;
-
-				if(validaciones_global[i][0] == hijo_id) {
-					validaciones_global.splice(i, 1);
-				}
-			}
-		}
-		padre.removeChild(hijo)
+			
+		padre.removeChild(hijo);
+		validar_item("movimiento");
 	}
 }
 

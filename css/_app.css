@@ -87,6 +87,8 @@ body.dark { background: var(--sup-3); overflow-y: scroll; overflow-x: hidden; }
 .verde{background-color: #5DB75D}
 .verde:hover, .verde:active{background-color:#4A924A}
 
+.texto-azuloscuro { color: #003359 !important; font-weight:bold; }
+
 /* M��rgenes y Paddings */
 .m-0{margin:0px !important} .m-5{margin:5px !important} .m-10{margin:10px !important} .m-15{margin:15px !important} .m-20{margin:20px !important} .m-25{margin:25px !important} .m-30{margin:30px !important} .m-35{margin:35px !important} .m-40{margin:40px !important} 
 .mt-0{margin-top:0px !important} .mt-5{margin-top:5px !important} .mt-10{margin-top:10px !important} .mt-15{margin-top:15px !important} .mt-20{margin-top:20px !important} .mt-25{margin-top:25px !important} .mt-30{margin-top:30px !important} .mt-35{margin-top:35px !important} .mt-40{margin-top:40px !important}
@@ -533,18 +535,31 @@ body{background-color:#E6E6E6}
     border-width: 0 1px 0 0;
     text-align: center;
 }
-.outline th, td {
+
+/* TODO: CUSTOM TABLE */
+table.custom-table {
+	border-collapse: collapse;
+  	width: 100%;
+}
+
+.custom-table th, td {
 	vertical-align: middle;
     text-align: center;	
 }
 
-table.outline tr { border: none; }
-table.outline th { color: #37436c; }
-
-table.stripeds tr:nth-child(odd) {
-	background-color: #f2f6fc;
-	border: 1px solid #f2f6fc;
+.custom-table th {
+  background-color: #d1dced;
+  color: #003359;
 }
+
+.custom-table td {
+	color: #989fa9;
+}
+
+.custom-table tr:nth-child(odd){background-color: #f1f6fa}
+.custom-table tr:nth-child(even){background-color: #fbfcfe}
+tr { border: none; }
+
 
 a.btn-floating.outline-blue {
 	box-shadow: none;
@@ -2353,3 +2368,11 @@ li.collection-item .collection-action .switch label {
 }
 
 strong{font-weight:bold}
+
+/* TODO: MOVIMIENTOS */
+.mov i {
+	font-size: 1.3rem;
+	font-weight: bold;
+}
+.mov-add { color: #02c574 !important; }
+.mov-deg { color: #ff2e4c !important; }
