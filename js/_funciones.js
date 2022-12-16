@@ -134,7 +134,6 @@ const cargar_registros = (seccion,pagina,busqueda,action="lista", id=0) => {
 		}
 	}
 }
-
 const eliminar_registro = (id, seccion, pagina, busqueda, action='lista', datos) => {
 	Swal.fire({
 		title: "¿Estás seguro de eliminar el registro?",
@@ -1692,6 +1691,167 @@ const validar_ccosto = (seccion) => {
 	validaciones_global = validaciones;
 }
 
+// TODO: Crear item dinamico
+const crear_banco = (indice = 1) => {
+
+	const cmp = document.getElementById("banco-registros");
+	let optionBancos = "";
+	for (var i = 0; i < tipos_global.length; i++)
+		optionBancos = optionBancos + `<option value="${tipos_global[i]['btp_id']}">${tipos_global[i]['btp_nombre']}</option>`;
+
+	let contenido = `
+	<li id="banco-${indice}">
+		<div class="collapsible-header collapsible-head">
+			<div class="collapsible-titulo truncate" id="titulo-${indice}">${indice}.</div>
+			<div class="collapsible-acciones">
+				<a onclick="eliminar_item(this, 'banco-registros', 'bancos')" idC="banco-${indice}" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue"><i class="material-icons">remove</i></a>
+			</div>
+		</div>
+		<div class="collapsible-body">
+			<div class="row">
+				<div class="col s12 m3 input-field">
+					<input type="text" name="ban_numero[]" id="ban_numero-${indice}" placeholder="" onkeyup="validar(this)" onchange="verificar_item(this,'bancos');">
+					<label>Numero</label>
+					<div class="form-error" id="error.ban_numero-${indice}"></div>
+				</div>
+				<div class="col s12 m3 input-field">
+					<input type="text" name="ban_nombre[]" id="ban_nombre-${indice}" placeholder="" onkeyup="validar(this); titulo_item(this)" onchange="verificar_item(this,'bancos');">
+					<label>Nombre</label>
+					<div class="form-error" id="error.ban_nombre-${indice}"></div>
+				</div>
+				<div class="col s12 m3 select">
+					<label>Banco</label>
+					<select name="btp_id[]" id="btp_id-${indice}" onchange="validar(this); verificar_item(this,'bancos');">
+						<option value="" selected disabled>Seleccione una opci&oacute;n</option>
+						${optionBancos}
+					</select>
+					<div class="form-error" id="error.btp_id-${indice}"></div>
+				</div>
+				<div class="col s12 m3 input-field">
+					<input type="text" name="ban_monto[]" id="ban_monto-${indice}" placeholder="" onkeyup="ajustar_valor(this); verificar_item(this,'bancos')" value="$0">
+					<label>Monto</label>
+					<div class="form-error" id="error.ban_monto-${indice}"></div>
+				</div> 
+			</div>
+		</div>
+	</li>`;
+
+	$(cmp).append(contenido);
+	$(`#btp_id-${indice}`).selectize();
+	M.updateTextFields();
+	validar_banco("banco");
+}
+
+// TODO: Validar item dinamico
+const validar_banco = (seccion) => {
+
+	const padre = document.getElementById("banco-registros");
+	const hijos = padre.querySelectorAll("li");
+	const ultimo = Object.keys(hijos)[Object.keys(hijos).length - 1];
+
+	let validaciones = [];
+	for (var i = 0; i < hijos.length; i++) {
+
+		const indice = hijos[i].id.split("-")[1];
+
+		if(hijos.length == 1) {
+			
+			validaciones.push(
+				[`ban_numero-${indice}`, 	'', 'required'],
+				[`ban_nombre-${indice}`, 	'', 'required'],
+				[`btp_id-${indice}`, 		'', 'required'],
+				[`ban_monto-${indice}`, 	'', 'required'],
+			);
+
+		} else {
+			if(hijos[i].id != hijos[ultimo].id) {
+
+				validaciones.push(
+					[`ban_numero-${indice}`, 	'', 'required'],
+					[`ban_nombre-${indice}`, 	'', 'required'],
+					[`btp_id-${indice}`, 		'', 'required'],
+					[`ban_monto-${indice}`, 	'', 'required'],
+				);
+
+			}
+		}	
+	}
+
+	validaciones_global = validaciones;
+}
+
+// TODO: Crear item dinamico
+const crear_caja = (indice = 1) => {
+
+	const cmp = document.getElementById("caja-registros");
+	let optionBancos = "";
+	for (var i = 0; i < tipos_global.length; i++)
+		optionBancos = optionBancos + `<option value="${tipos_global[i]['btp_id']}">${tipos_global[i]['btp_nombre']}</option>`;
+
+	let contenido = `
+	<li id="caja-${indice}">
+		<div class="collapsible-header collapsible-head">
+			<div class="collapsible-titulo truncate" id="titulo-${indice}">${indice}.</div>
+			<div class="collapsible-acciones">
+				<a onclick="eliminar_item(this, 'caja-registros', 'caja')" idC="caja-${indice}" class="btn-floating btn-small btn-xs waves-effect waves-light outline-blue"><i class="material-icons">remove</i></a>
+			</div>
+		</div>
+		<div class="collapsible-body">
+			<div class="row">
+				<div class="col s12 m4 input-field">
+					<input type="text" name="caj_nombre[]" id="caj_nombre-${indice}" placeholder="" onkeyup="validar(this); titulo_item(this)" onchange="verificar_item(this,'cajas');">
+					<label>Nombre</label>
+					<div class="form-error" id="error.caj_nombre-${indice}"></div>
+				</div>
+				<div class="col s12 m4 input-field">
+					<input type="text" name="caj_monto[]" id="caj_monto-${indice}" placeholder="" onkeyup="validar(this); ajustar_valor(this)" onchange="verificar_item(this,'cajas');" value="$0">
+					<label>Monto</label>
+					<div class="form-error" id="error.caj_monto-${indice}"></div>
+				</div>
+			</div>
+		</div>
+	</li>`;
+
+	$(cmp).append(contenido);
+	$(`#btp_id-${indice}`).selectize();
+	M.updateTextFields();
+	validar_caja("banco");
+}
+
+// TODO: Validar item dinamico
+const validar_caja = (seccion) => {
+
+	const padre = document.getElementById("caja-registros");
+	const hijos = padre.querySelectorAll("li");
+	const ultimo = Object.keys(hijos)[Object.keys(hijos).length - 1];
+
+	let validaciones = [];
+	for (var i = 0; i < hijos.length; i++) {
+
+		const indice = hijos[i].id.split("-")[1];
+
+		if(hijos.length == 1) {
+			
+			validaciones.push(
+				[`caj_nombre-${indice}`, 	'', 'required'],
+				[`caj_monto-${indice}`, 	'', 'required'],
+			);
+
+		} else {
+			if(hijos[i].id != hijos[ultimo].id) {
+
+				validaciones.push(
+					[`caj_nombre-${indice}`, 	'', 'required'],
+					[`caj_monto-${indice}`, 	'', 'required'],
+				);
+
+			}
+		}	
+	}
+
+	validaciones_global = validaciones;
+}
+
 // TODO: eliminar_item
 const eliminar_item = (cmp, seccion, modulo) => {
 
@@ -1705,13 +1865,16 @@ const eliminar_item = (cmp, seccion, modulo) => {
 	if(elements.id == id) {
 		M.toast({html: 'No se puede remover, se debe mantener al menos (1) elementos vacios.', classes: 'toastwarning'});
 	} else {
-			
+		
 		padre.removeChild(hijo);
 		if(modulo == "movimientos") {
 			validar_movimiento(modulo);
 		} else 
 		if(modulo == "ccostos") {
 			validar_ccosto(modulo);
+		} else
+		if(modulo == "bancos") {
+			validar_banco(modulo);
 		}
 	}
 }
@@ -1737,6 +1900,12 @@ const verificar_item = (cmp, modulo) => {
 			} else 
 			if(modulo == "ccostos") {
 				crear_ccosto(indice);
+			} else 
+			if(modulo == "bancos") {
+				crear_banco(indice);
+			} else 
+			if(modulo == "cajas") {
+				crear_caja(indice);
 			}
 		}
 	}
@@ -1747,4 +1916,12 @@ const titulo_item = (cmp) => {
 	const titulo = cmp.value;
 	const id = cmp.id.split("-")[1];
 	document.getElementById(`titulo-${id}`).innerHTML = `${id}. ${titulo}`;
+}
+
+// TODO: Obtener parametro de URL
+const getUrlParam = (param) => {
+	const location = window.location.href;
+	const url = new URL(location);
+	const dato = url.searchParams.get(param) != null ? url.searchParams.get(param) : 0;
+	return dato;
 }

@@ -442,6 +442,156 @@ const validacion_ccostos = (event) => {
 	}
 }
 
+// TODO: VALIDACIONES MODULO BANCOS
+const validacion_bancos = (event) => {
+	event.preventDefault();
+
+	const seccion = "bancos";
+	const seccion_singular = "banco";
+	const seccion_legible = "Banco";
+
+	let validaciones = [];
+	const formulario = event.target;
+	if(formulario.id == "banco_modal") {
+
+		validaciones = [
+			[`ban_numero`, 	'', 'required'],
+			[`ban_nombre`, 	'', 'required'],
+			[`btp_id`, 		'', 'required'],
+			[`ban_monto`, 	'', 'required'],
+		];
+
+	} else {
+		validaciones = validaciones_global;
+	}
+
+	const boton = document.getElementById(`action_${seccion_singular}`);
+	boton.setAttribute("disabled", "disabled");
+
+	const respuesta = validar_formulario(validaciones, false);
+	if(respuesta) {
+
+		const id = document.getElementById('ban_id') != null ? document.getElementById('ban_id').value : 0;
+		var xhr = new XMLHttpRequest();
+		var params 	= $(formulario).serialize();
+		xhr.open("POST", "inc/"+seccion+".php",true);
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhr.send(params);
+		xhr.onreadystatechange = function()
+		{
+			if(xhr.readyState == 4)
+			{
+				if(xhr.status == 200)
+				{
+					data = xhr.responseText.trim();
+					console.log(data);
+					if(data < 0)
+						M.toast({html: 'Ha ocurrido un error. Por favor, intente de nuevo. Código: '+data, classes: 'toasterror'});
+					else
+					{
+						if(id == 0)
+							M.toast({html: `Los ${seccion_legible} se ha creado correctamente.`, classes: 'toastdone'});
+						else
+							M.toast({html: `El ${seccion_legible} se ha editado correctamente.`, classes: 'toastdone'});
+
+
+						var variables = obtener_variables();
+						if(formulario.id == "banco_modal") {
+							$(`#modal-${seccion}`).modal('close');
+							formulario.innerHTML = "";
+						} else {
+							plantillas("banco_crear");
+						}
+						cargar_registros(seccion, variables[0],variables[1]);
+					}
+					boton.removeAttribute("disabled");
+					
+				} else {
+					M.toast({html: "Ha ocurrido un error, verifique su conexión a Internet", classes: 'toasterror'});
+				}
+			}
+		}
+
+	} else {
+		boton.removeAttribute("disabled");
+		M.toast({ html: "Existen campos requeridos sin completar!", classes: "toasterror" });
+	}
+}
+
+// TODO: VALIDACION MODULO CAJAS
+const validacion_cajas = (event) => {
+	event.preventDefault();
+
+	const seccion = "cajas";
+	const seccion_singular = "caja";
+	const seccion_legible = "Caja";
+
+	let validaciones = [];
+	const formulario = event.target;
+	if(formulario.id == "banco_modal") {
+
+		validaciones = [
+			[`caj_nombre`, 	'', 'required'],
+			[`caj_monto`, 	'', 'required'],
+		];
+
+	} else {
+		validaciones = validaciones_global;
+	}
+
+	const boton = document.getElementById(`action_${seccion_singular}`);
+	boton.setAttribute("disabled", "disabled");
+
+	const respuesta = validar_formulario(validaciones, false);
+	if(respuesta) {
+
+		const id = document.getElementById('ban_id') != null ? document.getElementById('ban_id').value : 0;
+		var xhr = new XMLHttpRequest();
+		var params 	= $(formulario).serialize();
+		xhr.open("POST", "inc/"+seccion+".php",true);
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhr.send(params);
+		xhr.onreadystatechange = function()
+		{
+			if(xhr.readyState == 4)
+			{
+				if(xhr.status == 200)
+				{
+					data = xhr.responseText.trim();
+					console.log(data);
+					if(data < 0)
+						M.toast({html: 'Ha ocurrido un error. Por favor, intente de nuevo. Código: '+data, classes: 'toasterror'});
+					else
+					{
+						if(id == 0)
+							M.toast({html: `Los ${seccion_legible} se ha creado correctamente.`, classes: 'toastdone'});
+						else
+							M.toast({html: `El ${seccion_legible} se ha editado correctamente.`, classes: 'toastdone'});
+
+
+						var variables = obtener_variables();
+						if(formulario.id == "caja_modal") {
+							$(`#modal-${seccion}`).modal('close');
+							formulario.innerHTML = "";
+						} else {
+							plantillas("caja_crear");
+						}
+						cargar_registros(seccion, variables[0],variables[1]);
+					}
+					boton.removeAttribute("disabled");
+					
+				} else {
+					M.toast({html: "Ha ocurrido un error, verifique su conexión a Internet", classes: 'toasterror'});
+				}
+			}
+		}
+
+	} else {
+		boton.removeAttribute("disabled");
+		M.toast({ html: "Existen campos requeridos sin completar!", classes: "toasterror" });
+	}
+}
+
 // TODO: funciones de error par FORM DATA
 function errorHandler(event) {
 	app.toast.show({text: 'Ha ocurrido un error. Intente de nuevo.',closeTimeout: 2000, cssClass: 'toasterror'});
