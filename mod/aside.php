@@ -50,7 +50,7 @@
 					<i class="material-icons">savings</i>
 					<span class="menu-title">Bancos</span>
 				<div class="collapsible-body">
-					<ul class="collapsible collapsible-sub" data-collapsible="accordion">
+					<ul class="collapsible collapsible-sub" data-collapsible="accordion" id="abancos">
 					<?php if($tools->validar_acceso(0, $usr_rol, $roles)): ?>
 						<li class="bold">
 							<a href="bancos" class="bold <?php if($cms_seccion[$index]['modulo'] == 'bancos') echo 'active' ?>">
