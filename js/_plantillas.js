@@ -932,7 +932,7 @@ const plantillas = (seccion, datos, rol=0, pagina=1, busqueda="", id=0, cmp) => 
 											<div class="form-error" id="error.mtp_id"></div>
 										</div>
 										<div class="col s12 m4 input-field">
-											<input type="text" name="mov_valor" id="mov_valor" placeholder="" autocomplete="off" onkeyup="ajustar_valor(this); validar(this)" value="${ajustarPrecio(datos[0]['mov_valor'])}">
+											<input type="text" name="mov_valor" id="mov_valor" placeholder="" autocomplete="off" onkeyup="ajustar_valor(this); validar(this)" value="${ajustarPrecio(datos[0]['mov_valor'])}" disabled>
 											<label>Valor<i class="requerido">*</i></label>
 											<div class="form-error" id="error.mov_valor"></div>
 										</div>
@@ -946,7 +946,7 @@ const plantillas = (seccion, datos, rol=0, pagina=1, busqueda="", id=0, cmp) => 
 										</div>
 										<div class="col s12 m4 select">
 											<label>Banco / Caja</label><i class="requerido">*</i>
-											<select name="suc_id" id="suc_id" onchange="validar(this)">
+											<select name="suc_id" id="suc_id" onchange="validar(this)" disabled>
 												<option value="" selected disabled>Seleccione una opci&oacute;n</option>
 												${optionBancos}
 												${optionCajas}
