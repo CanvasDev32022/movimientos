@@ -40,7 +40,7 @@
 				// Calculamos el rango inferior de registros a traer
 				$inferior = $max * ($pagina - 1);
 				// Consulta de Búsqueda
-				$prepare = "SELECT cco_id, cco_codigo, cco_nombre, cco_detalle FROM centro_costos WHERE borrado_logico = 0 AND (cco_codigo LIKE ? OR cco_nombre LIKE ? OR cco_detalle LIKE ?) ORDER BY cco_creado DESC LIMIT $inferior, $max";
+				$prepare = "SELECT cco_id, cco_codigo, cco_nombre, cco_detalle FROM centro_costos WHERE borrado_logico = 0 AND (cco_codigo LIKE ? OR cco_nombre LIKE ? OR cco_detalle LIKE ?) ORDER BY cco_codigo ASC LIMIT $inferior, $max";
 				$params = [$busqueda, $busqueda, $busqueda];
 				$types = ['s','s','s'];
 				$ccoS = $toolSQL->selectSQL($prepare, $types, $params);
